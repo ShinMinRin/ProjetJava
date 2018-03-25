@@ -1,22 +1,27 @@
-package projetjava2018;
-
+package modele;
 import java.util.*;
 
-public class Discipline {
+/**
+ *
+ */
+public class Client {
 
     private String nom;
-
+    private String ville;
+    private String tel;
+    
     /**
      * Constructeur par défaut
      */
-    public Discipline() {
+    public Client() {
     }
-
+    
+    
     /**
      * Constructeur complet
      */
-    public Discipline(String nom) {
-        this.nom = nom;
+    public Client(String nom, String ville, String tel){
+        
     }
 
     /**
@@ -30,18 +35,34 @@ public class Discipline {
         this.nom = nom;
     }
 
+    public String getVille() {
+        return ville;
+    }
+
+    public void setVille(String ville) {
+        this.ville = ville;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
     /**
      * Autre
      */
     @Override
     public String toString() {
-        return "Discipline{" + "nom=" + nom + '}';
+        return "Client{" + "nom=" + nom + ", ville=" + ville + ", tel=" + tel + '}';
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 71 * hash + Objects.hashCode(this.nom);
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.nom);
         return hash;
     }
 
@@ -53,12 +74,14 @@ public class Discipline {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Discipline other = (Discipline) obj;
+        final Client other = (Client) obj;
         if (!Objects.equals(this.nom, other.nom)) {
             return false;
         }
         return true;
     }
+
+    
 
     
 }

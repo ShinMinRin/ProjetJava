@@ -1,4 +1,4 @@
-package projetjava2018;
+package modele;
 import java.util.*;
 
 /**
