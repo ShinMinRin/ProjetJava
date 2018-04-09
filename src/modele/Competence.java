@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Competence {
 
-    private Personnel personne;
+    private Employe personne;
     private Discipline discipline;
     private int degre;
 
@@ -17,7 +17,7 @@ public class Competence {
     /**
      * Constructeur complet
      */
-    public Competence(Personnel personne, Discipline discipline, int degre) {
+    public Competence(Employe personne, Discipline discipline, int degre) {
         this.personne = personne;
         this.discipline = discipline;
         this.degre = degre;
@@ -26,11 +26,11 @@ public class Competence {
     /**
      * Getters et setters
      */
-    public Personnel getPersonne() {
+    public Employe getPersonne() {
         return personne;
     }
 
-    public void setPersonne(Personnel personne) {
+    public void setPersonne(Employe personne) {
         this.personne = personne;
     }
 

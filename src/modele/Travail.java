@@ -5,7 +5,7 @@ import java.util.*;
 public class Travail {
 
     private Projet projet;
-    private Personnel personne;
+    private Employe personne;
     private String dateEngagement;
     private float pourcentage;
 
@@ -18,7 +18,7 @@ public class Travail {
     /**
      * Constructeur sans pourcentage
      */
-    public Travail(Projet projet, Personnel personne, String dateEngagement) {
+    public Travail(Projet projet, Employe personne, String dateEngagement) {
         this.projet = projet;
         this.personne = personne;
         this.dateEngagement = dateEngagement;
@@ -27,7 +27,7 @@ public class Travail {
     /**
      * Constructeur complet
      */
-    public Travail(Projet projet, Personnel personne, String dateEngagement, float pourcentage) {
+    public Travail(Projet projet, Employe personne, String dateEngagement, float pourcentage) {
         this.projet = projet;
         this.personne = personne;
         this.dateEngagement = dateEngagement;
@@ -41,7 +41,7 @@ public class Travail {
         return projet;
     }
 
-    public Personnel getPersonne() {
+    public Employe getPersonne() {
         return personne;
     }
 
