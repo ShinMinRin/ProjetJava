@@ -52,11 +52,7 @@ public class Travail {
     public float getPourcentage() {
         return pourcentage;
     }
-
-    public void setDateEngagement(String dateEngagement) {
-        this.dateEngagement = dateEngagement;
-    }
-
+    
     public void setPourcentage(float pourcentage) {
         this.pourcentage = pourcentage;
     }
