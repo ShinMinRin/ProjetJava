@@ -5,7 +5,7 @@ import java.util.*;
 public class Travail {
 
     private Projet projet;
-    private Employe personne;
+    private Employe employe;
     private String dateEngagement;
     private float pourcentage;
 
@@ -20,7 +20,7 @@ public class Travail {
      */
     public Travail(Projet projet, Employe personne, String dateEngagement) {
         this.projet = projet;
-        this.personne = personne;
+        this.employe = personne;
         this.dateEngagement = dateEngagement;
     }
 
@@ -29,7 +29,7 @@ public class Travail {
      */
     public Travail(Projet projet, Employe personne, String dateEngagement, float pourcentage) {
         this.projet = projet;
-        this.personne = personne;
+        this.employe = personne;
         this.dateEngagement = dateEngagement;
         this.pourcentage = pourcentage;
     }
@@ -41,8 +41,8 @@ public class Travail {
         return projet;
     }
 
-    public Employe getPersonne() {
-        return personne;
+    public Employe getEmploye() {
+        return employe;
     }
 
     public String getDateEngagement() {
@@ -62,14 +62,14 @@ public class Travail {
      */
     @Override
     public String toString() {
-        return "Travail{" + "projet=" + projet + ", personne=" + personne + ", dateEngagement=" + dateEngagement + ", pourcentage=" + pourcentage + '}';
+        return "Travail{" + "projet=" + projet + ", personne=" + employe + ", dateEngagement=" + dateEngagement + ", pourcentage=" + pourcentage + '}';
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.projet);
-        hash = 23 * hash + Objects.hashCode(this.personne);
+        hash = 23 * hash + Objects.hashCode(this.employe);
         return hash;
     }
 
@@ -85,7 +85,7 @@ public class Travail {
         if (!Objects.equals(this.projet, other.projet)) {
             return false;
         }
-        if (!Objects.equals(this.personne, other.personne)) {
+        if (!Objects.equals(this.employe, other.employe)) {
             return false;
         }
         return true;

@@ -10,6 +10,7 @@ package modele;
 import projetjava18.Log;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ProjModele {
     protected List<Projet> mesProjets = new ArrayList<>();
@@ -136,7 +137,16 @@ public class ProjModele {
      */
     public List<Projet> listeProjetsClient(Client c){
         List<Projet> l = new ArrayList<>();
-        //TODO ajouter le code nécessaire au tri des projets
+        
+        if(c==null) return l;
+        if(mesProjets.isEmpty()) return l;
+        
+        for(Projet p:mesProjets){
+            Client cl = p.getClient();
+            if(cl.equals(c))
+                l.add(p);
+        }
+        
         return l;
     }
     
@@ -148,7 +158,16 @@ public class ProjModele {
      */
     public List<Travail> listeTravailEmploye(Employe e){
         List<Travail> l = new ArrayList<>();
-        //TODO ajouter le code nécessaire au tri des projets
+        
+        if(e==null) return l;
+        if(listeTravail.isEmpty()) return l;
+        
+        for(Travail t:listeTravail){
+            Employe emp = t.getEmploye();
+            if(emp.equals(e))
+                l.add(t);
+        }
+        
         return l;
     }
     
@@ -206,6 +225,69 @@ public class ProjModele {
     public String changePourcentage(Travail t, float p){
         t.setPourcentage(p);
         return "Changement de pourcentage effectué";
+    }
+    
+    /**
+     * Méthode permettant de supprimer un client
+     * @param c client à supprimer
+     * @return diagnostic de la suppression
+     */
+    public String suppClient(Client c){
+        List<Projet> lp = listeProjetsClient(c);
+        if(!lp.isEmpty())
+            return "Suppression impossible car le client possède des projets";
+        
+        boolean ok = mesClients.remove(c);
+        if(!ok)
+            return "Client introuvable ou suppression impossible";
+        else
+            return "Client supprimé";
+    }
+    
+    /**
+     * Méthode permettant de supprimer un projet
+     * @param p projet à supprimer
+     * @return diagnostic de la suppression
+     */
+    public String suppProjet(Projet p){
+        boolean ok = mesProjets.remove(p);
+        
+        if(ok)
+        {
+            //On supprime les travaux liés au projet
+            for(Travail t:listeTravail){
+                Projet projet = t.getProjet();
+                if(projet.equals(p))
+                    listeTravail.remove(t);
+            }
+            
+            return "Projet supprimé";
+        }
+        
+        else
+            return "Projet introuvable ou suppression impossible";     
+    }
+    
+    /**
+     * Méthode permettant de peupler artificiellement les listes de base
+     */
+    public void populate(){
+        mesClients.addAll(Arrays.asList(
+            new Client("Ledoux","Soignies","064/556365"),
+            new Client("Carrefour","Bruxelles","02/5247845"),
+            new Client("Dupuis","Namur","081/521478")));
+        
+        mesEmployes.addAll(Arrays.asList(
+            new Employe("Shin","Anna", "0475/859674","shin.anna@gmail.com"),
+            new Employe("Montagner","Fabrice","0472/121214","f.montagner@yahoo.fr"),
+            new Employe("Lemoine","Patrice","0492/748558","lemoine.p@hotmail.com")));
+        
+        mesProjets.add(new Projet("Logiciel de caisse Ledoux", mesClients.get(0), "20/04/2018","20/06/2018"));
+        
+        listeTravail.addAll(Arrays.asList(
+                new Travail(mesProjets.get(0), mesEmployes.get(0), "20/04/2018", 100),
+                new Travail(mesProjets.get(0), mesEmployes.get(1), "20/04/2018", 100),
+                new Travail(mesProjets.get(0), mesEmployes.get(2), "08/05/2018", 100)));
     }
     
 }
