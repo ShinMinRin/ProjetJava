@@ -13,17 +13,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ProjModele {
+    
+    private static ProjModele instance=null;
+    
+    protected ProjModele(){
+        
+    }
+    
+    public static ProjModele getInstance() {
+        if(instance == null)return instance=new ProjModele();
+      else return instance;
+    }
+    
     protected List<Projet> mesProjets = new ArrayList<>();
     protected List<Client> mesClients = new ArrayList<>();
     protected List<Employe> mesEmployes = new ArrayList<>();
     protected List<Travail> listeTravail = new ArrayList<>();
     
-    /**
-     * Constructeur par défaut
-     */
-    public ProjModele() {
-    }
-
+   
     /**
      * Méthode permettant l'ajout d'un objet
      * @param o objet à ajouter
@@ -99,7 +106,7 @@ public class ProjModele {
      * @return tous les clients de la liste
      */
     public List<Client> tousClients(){
-        //TODO critère de tri
+        mesClients.sort(new ClientComparator());
         return mesClients;
     }
     
@@ -108,7 +115,7 @@ public class ProjModele {
      * @return tous les employés de la liste
      */
     public List<Employe> tousEmployes(){
-        //TODO critère de tri
+        mesEmployes.sort(new EmployeComparator());
         return mesEmployes;
     }
     
@@ -117,7 +124,7 @@ public class ProjModele {
      * @return tous les projets de la liste
      */
     public List<Projet> tousProjets(){
-        //TODO critère de tri
+        mesProjets.sort(new ProjetComparator());
         return mesProjets;
     }
     
@@ -126,7 +133,6 @@ public class ProjModele {
      * @return tous les travaux (lien entre projet et employé)
      */
     public List<Travail> tousTravaux(){
-        //TODO critère de tri
         return listeTravail;
     }
     
@@ -266,6 +272,19 @@ public class ProjModele {
         
         else
             return "Projet introuvable ou suppression impossible";     
+    }
+    
+    /**
+     * Méthode permettant de supprimer un employé
+     * @param e employé à supprimer
+     * @return diagnostic de la suppression
+     */
+    public String suppEmploye(Employe e){
+        boolean ok = mesEmployes.remove(e);
+        if(!ok)
+            return "Employé introuvable ou suppression impossible";
+        else
+            return "Employé supprimé";        
     }
     
     /**
