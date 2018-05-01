@@ -212,7 +212,6 @@ public class ProjModeleTest {
         instance.ajouterObjet(p);
         expResult.add(p);
 
-
         p = new Projet("Caisse scan Nishi drinks", c, "02/06/2018", "02/07/2018");
         instance.ajouterObjet(p);
         expResult.add(p);
@@ -245,38 +244,38 @@ public class ProjModeleTest {
         System.out.println("listeTravailEmploye");
         ProjModele instance = new ProjModele();
         List<Travail> expResult = new ArrayList<>();
-        
+
         Employe e = new Employe("Dupont", "Nicolas", "0472895607", "nicolas.dupont@gmail.com");
         instance.ajouterObjet(e);
-        
+
         Client c = new Client("Nishi drinks", "Waterloo", "026451320");
         instance.ajouterObjet(c);
         Projet p = new Projet("Logistique Nishi drinks", c, "02/06/2018", "01/07/2018");
         instance.ajouterObjet(p);
-        Travail t = new Travail(p,e,"12/06/2018",25);
+        Travail t = new Travail(p, e, "12/06/2018", 25);
         instance.ajouterObjet(t);
         expResult.add(t);
-        
+
         Projet p2 = new Projet("Caisse scan Nishi drinks", c, "02/06/2018", "02/07/2018");
         instance.ajouterObjet(p);
-        t = new Travail(p2,e,"05/06/2018");
+        t = new Travail(p2, e, "05/06/2018");
         instance.ajouterObjet(t);
         expResult.add(t);
-        
+
         List<Travail> result = instance.listeTravailEmploye(e);
-        
-        for(Travail tTrouve : expResult){
-            if(!result.contains(tTrouve)){
+
+        for (Travail tTrouve : expResult) {
+            if (!result.contains(tTrouve)) {
                 fail("Travail non trouvé dans la liste " + tTrouve);
             }
         }
-        
-        for(Travail tTrouve : result){
-            if(!expResult.contains(tTrouve)){
-                fail("Travail incorrectement retourné dans le résultat "+tTrouve);
+
+        for (Travail tTrouve : result) {
+            if (!expResult.contains(tTrouve)) {
+                fail("Travail incorrectement retourné dans le résultat " + tTrouve);
             }
         }
-        
+
         instance.suppProjet(p);
         instance.suppProjet(p2);
         instance.suppClient(c);
@@ -372,18 +371,18 @@ public class ProjModeleTest {
         instance.suppClient(c);
         Client result = (Client) instance.getObject(c);
         assertNull(result);
-        
+
         c = new Client("Nishi drinks", "Waterloo", "026451320");
         instance.ajouterObjet(c);
         Projet p = new Projet("Logistique Nishi drinks", c, "02/06/2018", "01/07/2018");
         instance.ajouterObjet(p);
-        String expResult2 ="Suppression impossible car le client possède des projets";
+        String expResult2 = "Suppression impossible car le client possède des projets";
         String result2 = instance.suppClient(c);
         assertEquals(expResult2, result2);
-        
+
         instance.suppProjet(p);
-        instance.suppClient(c);      
-        
+        instance.suppClient(c);
+
     }
 
     /**

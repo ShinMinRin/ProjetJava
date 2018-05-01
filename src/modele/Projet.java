@@ -14,13 +14,22 @@ public class Projet {
      */
     public Projet() {
     }
+    
+    /**
+     * Constructeur partiel
+     */
+     public Projet(String titre, String dateDebut, String dateButoir) {
+        this.titre = titre;
+        this.dateDebut = dateDebut;
+        this.dateButoir = dateButoir;
+    }
 
     /**
      * Constructeur complet
      */
-    public Projet(String titre, Client client, String dateDebut, String dateButoir) {
+    public Projet(String titre, Client c, String dateDebut, String dateButoir) {
         this.titre = titre;
-        this.client = client;
+        this.client = c;
         this.dateDebut = dateDebut;
         this.dateButoir = dateButoir;
     }
@@ -60,7 +69,7 @@ public class Projet {
     public void setDateButoir(String dateButoir) {
         this.dateButoir = dateButoir;
     }
-    
+
     /**
      * Autres
      */

@@ -1,21 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package projetjava18;
+
+import modele.ProjModele;
+import controleur.ProjControleur;
+import vue.ProjVue;
 
 /**
  *
  * @author Tiffany
  */
 public class Main {
-
-    /**
-     * @param args the command line arguments
-     */
+    
+    private ProjControleur pc;
+    private ProjVue pv;
+    private ProjModele pm;
+    
+    public Main(){
+        pv = new ProjVue();
+        pm = new ProjModele();
+        pm.populate();
+        pc = new ProjControleur(pm,pv);
+        pc.gestion();  
+    }
+    
     public static void main(String[] args) {
-        // TODO code application logic here
+        Main projet = new Main();
     }
     
 }

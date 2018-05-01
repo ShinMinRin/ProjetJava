@@ -6,7 +6,7 @@ public class Competence {
 
     private Employe personne;
     private Discipline discipline;
-    private int degre;
+    private Niveau niveau;
 
     /**
      * Constructeur par défaut
@@ -17,15 +17,16 @@ public class Competence {
     /**
      * Constructeur complet
      */
-    public Competence(Employe personne, Discipline discipline, int degre) {
+    public Competence(Employe personne, Discipline discipline, Niveau niveau) {
         this.personne = personne;
         this.discipline = discipline;
-        this.degre = degre;
+        this.niveau = niveau;
     }
 
     /**
      * Getters et setters
      */
+  
     public Employe getPersonne() {
         return personne;
     }
@@ -42,32 +43,35 @@ public class Competence {
         this.discipline = discipline;
     }
 
-    public int getDegre() {
-        return degre;
+    public Niveau getNiveau() {
+        return niveau;
     }
 
-    public void setDegre(int degre) {
-        this.degre = degre;
+    public void setNiveau(Niveau niveau) {
+        this.niveau = niveau;
     }
 
     /**
-     * Autre
-     */
+     * Autres
+     */    
     @Override
     public String toString() {
-        return "Competence{" + "personne=" + personne + ", discipline=" + discipline + ", degre=" + degre + '}';
+        return "Competence{" + "personne=" + personne + ", discipline=" + discipline + ", niveau=" + niveau + '}';
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 47 * hash + Objects.hashCode(this.personne);
-        hash = 47 * hash + Objects.hashCode(this.discipline);
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.personne);
+        hash = 79 * hash + Objects.hashCode(this.discipline);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
@@ -83,6 +87,9 @@ public class Competence {
         }
         return true;
     }
+
+    
+    
 
     
 }
