@@ -11,19 +11,48 @@ public class ProjVue {
 
     private Scanner sc = new Scanner(System.in);
 
-    private List<String> menuPrincipal = new ArrayList<>(Arrays.asList("Ajouter", "Modifier", "Rechercher", "Supprimer", "Quitter"));
-    private List<String> sousMenu = new ArrayList<>(Arrays.asList("Projet", "Employe", "Discipline"));
-
-    public int menu() {
+    private List<String> menuPrincipal = new ArrayList<>(Arrays.asList("Ajouter", "Listes", "Modifier", "Rechercher", "Supprimer", "Quitter"));
+    private List<String> menuAjout = new ArrayList<>(Arrays.asList("Client","Projet","Employé", "Discipline"));
+    private List<String> menuAffiche = new ArrayList<>(Arrays.asList("Liste des clients", "Liste des projets", "Liste des employés", "Liste des disciplines",
+                                        "Liste des employés d'un projet", "Liste des projets d'un employé", "Liste des compétences d'un employé"));
+    private List<String> menuModif = new ArrayList<>(Arrays.asList("Client - Modifier la ville", "Client - Modifier le téléphone",
+                                                                    "Projet - Modifier la date butoir",
+                                                                    "Employé - Modifier le gsm", "Employé - Modifier l'email", "Employé - Modifier une compétence"));
+    private List<String> menuRech = new ArrayList<>(Arrays.asList("Client","Projet","Employé", "Discipline"));
+    private List<String> menuSupp = new ArrayList<>(Arrays.asList("Client","Projet","Employé", "Discipline"));
+    
+    
+    public int menuPrincipal() {
         affListe(menuPrincipal);
         return sc.nextInt();
     }
     
-    public int sousMenu(String nomMenu){
-        affMsg(nomMenu);
-        affListe(sousMenu);
+    public int menuAjout(){
+        affListe(menuAjout);
         return sc.nextInt();
     }
+    
+    public int menuAffiche(){
+        affListe(menuAffiche);
+        return sc.nextInt();
+    }
+    
+    public int menuModif(){
+        affListe(menuModif);
+        return sc.nextInt();
+    }
+    
+    public int menuSupp(){
+        affListe(menuSupp);
+        return sc.nextInt();
+    }
+    
+    public int menuRech(){
+        affListe(menuRech);
+        return sc.nextInt();
+    }
+    
+    
     
     public void affMsg(Object msg) {
         System.out.println(msg);
@@ -55,6 +84,14 @@ public class ProjVue {
         return p;
     }
     
+    public Client encodeClient(){
+        String nom = getMsg("Nom : ");
+        String ville = getMsg("Ville : ");
+        String tel = getMsg("Tel : ");
+        Client c = new Client(nom,ville,tel);
+        return c;
+    }
+    
     public Employe encodeEmploye(){
         String nom = getMsg("Nom : ");
         String prenom = getMsg("Prénom : ");
@@ -62,6 +99,12 @@ public class ProjVue {
         String email = getMsg("Adresse email : ");
         Employe e = new Employe(nom, prenom, gsm, email);
         return e;
+    }
+    
+    public Discipline encodeDiscipline(){
+        String nom = getMsg("Discipline : ");
+        Discipline d = new Discipline(nom);
+        return d;
     }
 
 }

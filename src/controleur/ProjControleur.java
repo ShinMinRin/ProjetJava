@@ -1,6 +1,6 @@
 package controleur;
 
-import modele.ProjModele;
+import modele.*;
 import vue.ProjVue;
 
 public class ProjControleur {
@@ -19,75 +19,100 @@ public class ProjControleur {
     public void gestion(){
         int ch1, ch2;
         
-        ch1 = vue.menu();
+        ch1 = vue.menuPrincipal();
         
         switch(ch1){
             case 1 : //Ajouter
-                ch2 = vue.sousMenu("Ajouter");
+                ch2 = vue.menuAjout();
                 switch(ch2){
-                    case 1 : 
+                    case 1 :
+                        vue.affMsg("Ajout d'un client");
+                        ajouterClient();
+                        break;
+                    case 2 : 
                         vue.affMsg("Ajout d'un projet");
+                        ajouterProjet();
                         break;
-                    case 2 : 
+                    case 3 : 
                         vue.affMsg("Ajout d'un employé");
+                        ajouterEmploye();
                         break;
-                    case 3 :
+                    case 4 :
                         vue.affMsg("Ajout d'une discipline");
+                        ajouterDiscipline();
                         break;
                 }
                 break;
                 
-            case 2 : //Modifier
-                ch2 = vue.sousMenu("Modifier");
+            case 2 : //Listes
+                ch2 = vue.menuAffiche();
                 switch(ch2){
-                    case 1 : 
-                        vue.affMsg("Modification d'un projet");
+                    
+                }
+                break;
+                
+            case 3 : //Modifier
+                ch2 = vue.menuModif();
+                switch(ch2){
+                    case 1 :
                         break;
-                    case 2 : 
-                        vue.affMsg("Modification d'un employé");
+                    case 2 :
                         break;
                     case 3 :
-                        vue.affMsg("Modification d'une discipline");
+                        break;
+                    case 4 : 
+                        break;
+                    case 5 :
+                        break;
+                    case 6:
                         break;
                 }
                 break;
                 
-            case 3 : //Rechercher
-                ch2 = vue.sousMenu("Rechercher");
+
+            case 4 : //Rechercher
+                ch2 = vue.menuRech();
                 switch(ch2){
-                    case 1 : 
-                        vue.affMsg("Recherche d'un projet");
-                        break;
-                    case 2 : 
-                        vue.affMsg("Recherche d'un employé");
-                        break;
-                    case 3 :
-                        vue.affMsg("Recherche d'une discipline");
-                        break;
+                   
                 }
                 break;
                 
-            case 4 : //Supprimer
-                ch2 = vue.sousMenu("Supprimer");
+            case 5 : //Supprimer
+                ch2 = vue.menuSupp();
                 switch(ch2){
-                    case 1 : 
-                        vue.affMsg("Suppression d'un projet");
-                        break;
-                    case 2 : 
-                        vue.affMsg("Suppression d'un employé");
-                        break;
-                    case 3 :
-                        vue.affMsg("Suppression d'une discipline");
-                        break;
+                    
                 }
                 break;
                 
-            case 5 : //Quitter
+            case 6 : //Quitter
                 System.exit(0);
                 break;
         }
         
     }
+    
+    public void ajouterProjet(){
+        Projet p = vue.encodeProjet();
+        String msg = modele.ajouterObjet(p);
+        vue.affMsg(msg);
+    }
+    
+    public void ajouterEmploye(){
+        Employe e = vue.encodeEmploye();
+        String msg = modele.ajouterObjet(e);
+        vue.affMsg(msg);
+    }
+    
+    public void ajouterDiscipline(){
+        Discipline d = vue.encodeDiscipline();
+        String msg = modele.ajouterObjet(d);
+        vue.affMsg(msg);
+    }
+
+    private void ajouterClient() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     
     
 }

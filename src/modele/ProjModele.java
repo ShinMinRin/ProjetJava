@@ -12,19 +12,19 @@ import java.util.Arrays;
 
 public class ProjModele {
 
-    //private static ProjModele instance = null;
+    private static ProjModele instance = null;
 
     public ProjModele() {
 
     }
 
-    /*public static ProjModele getInstance() {
+    public static ProjModele getInstance() {
         if (instance == null) {
             return instance = new ProjModele();
         } else {
             return instance;
         }
-    }*/
+    }
 
     protected List<Projet> mesProjets = new ArrayList<>();
     protected List<Client> mesClients = new ArrayList<>();
