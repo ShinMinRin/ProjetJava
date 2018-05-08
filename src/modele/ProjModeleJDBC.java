@@ -112,21 +112,23 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Client) {
-            query = "insert into PROJ_() VALUES ()";
+            query = "insert into PROJ_CLIENT(NOM_CLI, VILLE_CLI, TEL_CLI) VALUES (?,?,?)";
             PreparedStatement pstm = null;
 
             try {
                 pstm = dbconnect.prepareStatement(query);
-
+                pstm.setString(1, ((Client) o).getNom());
+                pstm.setString(2, ((Client) o).getVille());
+                pstm.setString(3, ((Client) o).getTel());
                 int n = pstm.executeUpdate();
 
                 if (n == 1) {
-                    msg = "Ajout projet effectué";
+                    msg = "Ajout client effectué";
                 } else {
-                    msg = "Ajout projet non effectué";
+                    msg = "Ajout client non effectué";
                 }
             } catch (Exception e) {
-                msg = "Erreur lors de l'ajout du projet " + e;
+                msg = "Erreur lors de l'ajout du client " + e;
             } finally {
                 try {
                     if (pstm != null) {
@@ -140,21 +142,21 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Discipline) {
-            query = "insert into PROJ_() VALUES ()";
+            query = "insert into PROJ_DISCIPLINE(NOM_DISC) VALUES (?)";
             PreparedStatement pstm = null;
 
             try {
                 pstm = dbconnect.prepareStatement(query);
-
+                pstm.setString(1, ((Discipline) o).getNom());
                 int n = pstm.executeUpdate();
 
                 if (n == 1) {
-                    msg = "Ajout projet effectué";
+                    msg = "Ajout discipline effectué";
                 } else {
-                    msg = "Ajout projet non effectué";
+                    msg = "Ajout discipline non effectué";
                 }
             } catch (Exception e) {
-                msg = "Erreur lors de l'ajout du projet " + e;
+                msg = "Erreur lors de l'ajout de la discipline " + e;
             } finally {
                 try {
                     if (pstm != null) {
@@ -168,12 +170,13 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Travail) {
+            //TODO modifier la query en fonction de la table travail
             query = "insert into PROJ_() VALUES ()";
             PreparedStatement pstm = null;
 
             try {
                 pstm = dbconnect.prepareStatement(query);
-
+                //TODO ajouter les données dans la query
                 int n = pstm.executeUpdate();
 
                 if (n == 1) {
