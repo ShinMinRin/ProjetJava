@@ -76,35 +76,43 @@ public class ProjVue {
     }
     
     
-    public Projet encodeProjet(){
+    public Projet.ProjetBuilder encodeProjet(Client c){
         String titre = getMsg("Titre : ");
         String debut = getMsg("Date de début : ");
         String fin = getMsg("Date butoir : ");
-        Projet p = new Projet(titre, debut, fin);
-        return p;
+        
+        Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
+        pb.setTitre(titre).setClient(c).setDateButoir(fin).setDateDebut(debut);
+        
+        return pb;
     }
     
-    public Client encodeClient(){
+    public Client.ClientBuilder encodeClient(){
         String nom = getMsg("Nom : ");
         String ville = getMsg("Ville : ");
         String tel = getMsg("Tel : ");
-        Client c = new Client(nom,ville,tel);
-        return c;
+        
+        Client.ClientBuilder cb = new Client.ClientBuilder();
+        cb.setNom(nom).setTel(tel).setVille(ville);
+        
+        return cb;
     }
     
-    public Employe encodeEmploye(){
+    public Employe.EmployeBuilder encodeEmploye(){
         String nom = getMsg("Nom : ");
         String prenom = getMsg("Prénom : ");
         String gsm = getMsg("Numéro de gsm : ");
         String email = getMsg("Adresse email : ");
-        Employe e = new Employe(nom, prenom, gsm, email);
-        return e;
-    }
-    
-    public Discipline encodeDiscipline(){
-        String nom = getMsg("Discipline : ");
-        Discipline d = new Discipline(nom);
-        return d;
+        
+        Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+        eb.setNom(nom).setPrenom(prenom).setGsm(gsm).setEmail(email);
+        
+        return eb;        
     }
 
+    public Discipline encodeDiscipline() {
+        String nom = getMsg("Nom de la discipline : ");
+        return new Discipline(nom);
+    }
+    
 }

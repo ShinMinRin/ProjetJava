@@ -323,21 +323,84 @@ public class ProjModele {
     }
 
     /**
+     * Méthode permettant de récupérer le dernier client ajouté
+     */
+    public Client dernierClient(){
+        return mesClients.get(mesClients.size()-1);
+    }
+    
+    /**
      * Méthode permettant de peupler artificiellement les listes de base
      */
     public void populate() {
-        mesClients.addAll(Arrays.asList(
-                new Client("Ledoux", "Soignies", "064/556365"),
-                new Client("Carrefour", "Bruxelles", "02/5247845"),
-                new Client("Dupuis", "Namur", "081/521478")));
+        
+        //CLIENTS
+        Client.ClientBuilder cb = new Client.ClientBuilder();
+        cb.setNom("Ledoux").setVille("Soignies").setTel("064/556365");
+        try{
+            Client cli = cb.build();
+            mesClients.add(cli);
+        }catch(Exception exc){
+            System.out.println("Erreur de création "+exc);
+        }
+        
+        cb.setNom("Carrefour").setVille("Bruxelles").setTel("02/5247845");
+        try{
+            Client cli = cb.build();
+            mesClients.add(cli);
+        }catch(Exception exc){
+            System.out.println("Erreur de création "+exc);
+        }
+        
+        cb.setNom("Dupuis").setVille("Namur").setTel("081/521478");
+        try{
+            Client cli = cb.build();
+            mesClients.add(cli);
+        }catch(Exception exc){
+            System.out.println("Erreur de création "+exc);
+        }
+        
+        //EMPLOYE
+        Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+        eb.setNom("Shin").setPrenom("Anna").setGsm("0475/859674").setEmail("shin.anna@gmail.com");
+        try{
+            Employe emp = eb.build();
+            mesEmployes.add(emp);
+        }catch(Exception exc){
+            System.out.println("Erreur de création "+exc);
+        }
+        
+        eb.setNom("Montagner").setPrenom("Fabrice").setGsm("0472/121214").setEmail("f.montagner@yahoo.fr");
+        try{
+            Employe emp = eb.build();
+            mesEmployes.add(emp);
+        }catch(Exception exc){
+            System.out.println("Erreur de création "+exc);
+        }
+        
+        eb.setNom("Lemoine").setPrenom("Patrick").setGsm("0492/748558").setEmail("lemoine.p@hotmail.com");
+        try{
+            Employe emp = eb.build();
+            mesEmployes.add(emp);
+        }catch(Exception exc){
+            System.out.println("Erreur de création "+exc);
+        }
 
-        mesEmployes.addAll(Arrays.asList(
-                new Employe("Shin", "Anna", "0475/859674", "shin.anna@gmail.com"),
-                new Employe("Montagner", "Fabrice", "0472/121214", "f.montagner@yahoo.fr"),
-                new Employe("Lemoine", "Patrice", "0492/748558", "lemoine.p@hotmail.com")));
+      
+       //PROJET
+       try{
+           Projet p = new Projet.ProjetBuilder().
+                   setTitre("Logiciel de caisse Ledoux").
+                   setClient(mesClients.get(0)).
+                   setDateDebut("20/04/2018").
+                   setDateButoir("20/06/2018").
+                   build();
+           mesProjets.add(p);
+       }catch(Exception exc){
+           System.out.println("Erreur de création "+exc);
+       }
 
-        mesProjets.add(new Projet("Logiciel de caisse Ledoux", mesClients.get(0), "20/04/2018", "20/06/2018"));
-
+       //ASSOCIATION PROJET - EMPLOYE
         listeTravail.addAll(Arrays.asList(
                 new Travail(mesProjets.get(0), mesEmployes.get(0), "20/04/2018", 100),
                 new Travail(mesProjets.get(0), mesEmployes.get(1), "20/04/2018", 100),

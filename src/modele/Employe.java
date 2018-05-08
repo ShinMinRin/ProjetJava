@@ -1,8 +1,8 @@
 package modele;
-import java.util.*;
 
 /**
- * 
+ *
+ * @author tiffany.deschinckel
  */
 public class Employe {
 
@@ -10,26 +10,14 @@ public class Employe {
     private String prenom;
     private String gsm;
     private String email;
-    
-    /**
-     * Constructeur par défaut
-     */
-    public Employe() {
+
+    private Employe(EmployeBuilder eb) {
+        this.nom = eb.nom;
+        this.prenom = eb.prenom;
+        this.gsm = eb.gsm;
+        this.email = eb.email;
     }
 
-    /**
-     * Constructeur complet
-     */
-    public Employe(String nom, String prenom, String gsm, String email) {
-        this.nom = nom;
-        this.prenom = prenom;
-        this.gsm = gsm;
-        this.email = email;
-    }
-    
-    /**
-     * Getters et setters
-     */
     public String getNom() {
         return nom;
     }
@@ -42,63 +30,60 @@ public class Employe {
         return gsm;
     }
 
-    public void setGsm(String gsm) {
-        this.gsm = gsm;
-    }
-
     public String getEmail() {
         return email;
+    }
+
+    public void setGsm(String gsm) {
+        this.gsm = gsm;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     * Autres
-     */
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + Objects.hashCode(this.nom);
-        hash = 89 * hash + Objects.hashCode(this.prenom);
-        hash = 89 * hash + Objects.hashCode(this.gsm);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Employe other = (Employe) obj;
-        if (!Objects.equals(this.nom, other.nom)) {
-            return false;
-        }
-        if (!Objects.equals(this.prenom, other.prenom)) {
-            return false;
-        }
-        if (!Objects.equals(this.gsm, other.gsm)) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String toString() {
-        return "Employe{" + "nom=" + nom + ", prenom=" + prenom + ", gsm=" + gsm + ", email=" + email + '}';
+        return "EmployeB{" + "nom=" + nom + ", prenom=" + prenom + ", gsm=" + gsm + ", email=" + email + '}';
     }
-    
-    
-    
-    
-    
 
-    
+    public static class EmployeBuilder {
 
+        private String nom;
+        private String prenom;
+        private String gsm;
+        private String email;
 
+        public EmployeBuilder() {
+        }
+
+        public EmployeBuilder setNom(String nom) {
+            this.nom = nom;
+            return this;
+        }
+
+        public EmployeBuilder setPrenom(String prenom) {
+            this.prenom = prenom;
+            return this;
+        }
+
+        public EmployeBuilder setGsm(String gsm) {
+            this.gsm = gsm;
+            return this;
+        }
+
+        public EmployeBuilder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+        
+        public Employe build() throws Exception{
+            if(nom==null || prenom==null)throw new Exception("informations de base manquantes");
+            if(nom.trim().equals("")|| prenom.trim().equals("")) throw new Exception("informations de base manquantes");
+            return new Employe(this);
+        }
+        
+        
+    }
 
 }

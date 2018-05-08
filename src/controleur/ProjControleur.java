@@ -47,6 +47,21 @@ public class ProjControleur {
             case 2 : //Listes
                 ch2 = vue.menuAffiche();
                 switch(ch2){
+                    case 1 : //clients
+                        break;
+                    case 2 : //projets
+                        break;
+                    case 3 : //employés
+                        break;
+                    case 4 : //disciplines
+                        break;
+                    case 5 : //employés sur un projet précis
+                        break;
+                    case 6 : //projets d'un employé précis
+                        break;
+                    case 7 : //compétences d'un employé
+                        break;
+                        
                     
                 }
                 break;
@@ -54,17 +69,17 @@ public class ProjControleur {
             case 3 : //Modifier
                 ch2 = vue.menuModif();
                 switch(ch2){
-                    case 1 :
+                    case 1 : //ville cli
                         break;
-                    case 2 :
+                    case 2 : //tel cli
                         break;
-                    case 3 :
+                    case 3 : //proj date butoir
                         break;
-                    case 4 : 
+                    case 4 : //gsm emp
                         break;
-                    case 5 :
+                    case 5 : //email emp
                         break;
-                    case 6:
+                    case 6: //compétence emp
                         break;
                 }
                 break;
@@ -73,14 +88,28 @@ public class ProjControleur {
             case 4 : //Rechercher
                 ch2 = vue.menuRech();
                 switch(ch2){
-                   
+                   case 1 : //client
+                        break;
+                    case 2 : //projet
+                        break;
+                    case 3 : //Employé
+                        break;
+                    case 4 : //Discipline
+                        break;
                 }
                 break;
                 
             case 5 : //Supprimer
                 ch2 = vue.menuSupp();
                 switch(ch2){
-                    
+                    case 1 : //client
+                        break;
+                    case 2 : //projet
+                        break;
+                    case 3 : //Employé
+                        break;
+                    case 4 : //Discipline
+                        break;
                 }
                 break;
                 
@@ -92,15 +121,42 @@ public class ProjControleur {
     }
     
     public void ajouterProjet(){
-        Projet p = vue.encodeProjet();
-        String msg = modele.ajouterObjet(p);
-        vue.affMsg(msg);
+        Client c = null;
+        //TODO rajouter regex pour le o/n
+        String rep = vue.getMsg("Nouveau client ? (o/n)");
+        rep.toLowerCase();
+        if(rep.equals("o")){
+            ajouterClient();
+            c = modele.dernierClient();
+        }
+        
+        else{
+            //TODO rechercher
+        }
+            
+        
+                
+        Projet.ProjetBuilder pb = vue.encodeProjet(c);
+        
+        try{
+            Projet p = pb.build();
+            String msg = modele.ajouterObjet(p);
+            vue.affMsg(msg);
+        }catch(Exception exc){
+            vue.affMsg("Erreur de création "+exc);
+        }
+        
     }
     
     public void ajouterEmploye(){
-        Employe e = vue.encodeEmploye();
-        String msg = modele.ajouterObjet(e);
-        vue.affMsg(msg);
+        Employe.EmployeBuilder eb = vue.encodeEmploye();
+        try{
+            Employe e = eb.build();
+            String msg = modele.ajouterObjet(e);
+            vue.affMsg(msg);
+        }catch(Exception exc){
+            vue.affMsg("Erreur de création "+exc);
+        }
     }
     
     public void ajouterDiscipline(){
@@ -110,7 +166,15 @@ public class ProjControleur {
     }
 
     private void ajouterClient() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Client.ClientBuilder cb = vue.encodeClient();
+        try{
+            Client c = cb.build();
+            String msg = modele.ajouterObjet(c);
+            vue.affMsg(msg);
+        }catch (Exception exc){
+            vue.affMsg("Erreur de création " + exc);
+        }
+        
     }
     
     

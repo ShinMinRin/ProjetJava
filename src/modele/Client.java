@@ -1,5 +1,4 @@
 package modele;
-import java.util.*;
 
 /**
  *
@@ -9,24 +8,13 @@ public class Client {
     private String nom;
     private String ville;
     private String tel;
-    
-    /**
-     * Constructeur par défaut
-     */
-    public Client() {
-    }
-    
-    
-    /**
-     * Constructeur complet
-     */
-    public Client(String nom, String ville, String tel){
-        
+
+    private Client(ClientBuilder cb) {
+        this.nom = cb.nom;
+        this.ville = cb.ville;
+        this.tel = cb.tel;
     }
 
-    /**
-     * Getters et setters
-     */
     public String getNom() {
         return nom;
     }
@@ -35,49 +23,52 @@ public class Client {
         return ville;
     }
 
-    public void setVille(String ville) {
-        this.ville = ville;
-    }
-
     public String getTel() {
         return tel;
+    }
+
+    public void setVille(String ville) {
+        this.ville = ville;
     }
 
     public void setTel(String tel) {
         this.tel = tel;
     }
 
-    /**
-     * Autre
-     */
     @Override
     public String toString() {
         return "Client{" + "nom=" + nom + ", ville=" + ville + ", tel=" + tel + '}';
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 47 * hash + Objects.hashCode(this.nom);
-        return hash;
+    public static class ClientBuilder {
+
+        private String nom;
+        private String ville;
+        private String tel;
+
+        public ClientBuilder setNom(String nom) {
+            this.nom = nom;
+            return this;
+        }
+
+        public ClientBuilder setVille(String ville) {
+            this.ville = ville;
+            return this;
+        }
+
+        public ClientBuilder setTel(String tel) {
+            this.tel = tel;
+            return this;
+        }
+        
+        public Client build() throws Exception{
+            if(nom==null || ville==null || tel==null)
+                throw new Exception("Informations manquantes");
+            if(nom.trim().equals("") || ville.trim().equals("") || tel.trim().equals(""))
+                throw new Exception("Informations manquantes");
+            return new Client(this);
+        }
+        
+        
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Client other = (Client) obj;
-        if (!Objects.equals(this.nom, other.nom)) {
-            return false;
-        }
-        return true;
-    }
-
-    
-
-    
 }

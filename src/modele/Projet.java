@@ -9,57 +9,23 @@ public class Projet {
     private String dateDebut;
     private String dateButoir;
 
-    /**
-     * Constructeur par défaut
-     */
-    public Projet() {
+    private Projet(ProjetBuilder pb) {
+        this.titre = pb.titre;
+        this.client = pb.client;
+        this.dateDebut = pb.dateDebut;
+        this.dateButoir = pb.dateButoir;
     }
-    
-    /**
-     * Constructeur partiel
-     */
-     public Projet(String titre, String dateDebut, String dateButoir) {
-        this.titre = titre;
-        this.dateDebut = dateDebut;
-        this.dateButoir = dateButoir;
-    }
-
-    /**
-     * Constructeur complet
-     */
-    public Projet(String titre, Client c, String dateDebut, String dateButoir) {
-        this.titre = titre;
-        this.client = c;
-        this.dateDebut = dateDebut;
-        this.dateButoir = dateButoir;
-    }
-    
-    /**
-     * Getters et setters
-     */
 
     public String getTitre() {
         return titre;
-    }
-
-    public void setTitre(String titre) {
-        this.titre = titre;
     }
 
     public Client getClient() {
         return client;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
     public String getDateDebut() {
         return dateDebut;
-    }
-
-    public void setDateDebut(String dateDebut) {
-        this.dateDebut = dateDebut;
     }
 
     public String getDateButoir() {
@@ -70,35 +36,49 @@ public class Projet {
         this.dateButoir = dateButoir;
     }
 
-    /**
-     * Autres
-     */
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.titre);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Projet other = (Projet) obj;
-        if (!Objects.equals(this.titre, other.titre)) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String toString() {
         return "Projet{" + "titre=" + titre + ", client=" + client + ", dateDebut=" + dateDebut + ", dateButoir=" + dateButoir + '}';
+    }
+
+    public static class ProjetBuilder {
+
+        private String titre;
+        private Client client;
+        private String dateDebut;
+        private String dateButoir;
+
+        public ProjetBuilder() {
+        }
+
+        public ProjetBuilder setTitre(String titre) {
+            this.titre = titre;
+            return this;
+        }
+
+        public ProjetBuilder setClient(Client client) {
+            this.client = client;
+            return this;
+        }
+
+        public ProjetBuilder setDateDebut(String dateDebut) {
+            this.dateDebut = dateDebut;
+            return this;
+        }
+
+        public ProjetBuilder setDateButoir(String dateButoir) {
+            this.dateButoir = dateButoir;
+            return this;
+        }
+        
+        public Projet build() throws Exception{
+            if(titre==null || client==null || dateDebut==null || dateButoir==null)
+                throw new Exception("Informations manquantes");
+            if(titre.trim().equals("") || dateDebut.trim().equals("") || dateButoir.trim().equals(""))
+                    throw new Exception("Informations manquantes");
+            return new Projet(this);
+        }
+        
     }
 
 }
