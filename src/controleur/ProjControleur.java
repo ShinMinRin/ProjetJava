@@ -4,7 +4,7 @@ import modele.*;
 import vue.ProjVue;
 
 public class ProjControleur {
-    
+
     private ProjModele modele = null;
     private ProjVue vue = null;
 
@@ -15,168 +15,160 @@ public class ProjControleur {
         this.modele = modele;
         this.vue = vue;
     }
-    
-    public void gestion(){
+
+    public void gestion() {
         int ch1, ch2;
-        
+
         ch1 = vue.menuPrincipal();
-        
-        switch(ch1){
-            case 1 : //Ajouter
+
+        switch (ch1) {
+            case 1: //Ajouter
                 ch2 = vue.menuAjout();
-                switch(ch2){
-                    case 1 :
+                switch (ch2) {
+                    case 1:
                         vue.affMsg("Ajout d'un client");
                         ajouterClient();
                         break;
-                    case 2 : 
+                    case 2:
                         vue.affMsg("Ajout d'un projet");
                         ajouterProjet();
                         break;
-                    case 3 : 
+                    case 3:
                         vue.affMsg("Ajout d'un employé");
                         ajouterEmploye();
                         break;
-                    case 4 :
+                    case 4:
                         vue.affMsg("Ajout d'une discipline");
                         ajouterDiscipline();
                         break;
                 }
                 break;
-                
-            case 2 : //Listes
+
+            case 2: //Listes
                 ch2 = vue.menuAffiche();
-                switch(ch2){
-                    case 1 : //clients
+                switch (ch2) {
+                    case 1: //clients
                         break;
-                    case 2 : //projets
+                    case 2: //projets
                         break;
-                    case 3 : //employés
+                    case 3: //employés
                         break;
-                    case 4 : //disciplines
+                    case 4: //disciplines
                         break;
-                    case 5 : //employés sur un projet précis
+                    case 5: //employés sur un projet précis
                         break;
-                    case 6 : //projets d'un employé précis
+                    case 6: //projets d'un employé précis
                         break;
-                    case 7 : //compétences d'un employé
+                    case 7: //compétences d'un employé
                         break;
-                        
-                    
+
                 }
                 break;
-                
-            case 3 : //Modifier
+
+            case 3: //Modifier
                 ch2 = vue.menuModif();
-                switch(ch2){
-                    case 1 : //ville cli
+                switch (ch2) {
+                    case 1: //ville cli
                         break;
-                    case 2 : //tel cli
+                    case 2: //tel cli
                         break;
-                    case 3 : //proj date butoir
+                    case 3: //proj date butoir
                         break;
-                    case 4 : //gsm emp
+                    case 4: //gsm emp
                         break;
-                    case 5 : //email emp
+                    case 5: //email emp
                         break;
                     case 6: //compétence emp
                         break;
                 }
                 break;
-                
 
-            case 4 : //Rechercher
+            case 4: //Rechercher
                 ch2 = vue.menuRech();
-                switch(ch2){
-                   case 1 : //client
+                switch (ch2) {
+                    case 1: //client
                         break;
-                    case 2 : //projet
+                    case 2: //projet
                         break;
-                    case 3 : //Employé
+                    case 3: //Employé
                         break;
-                    case 4 : //Discipline
+                    case 4: //Discipline
                         break;
                 }
                 break;
-                
-            case 5 : //Supprimer
+
+            case 5: //Supprimer
                 ch2 = vue.menuSupp();
-                switch(ch2){
-                    case 1 : //client
+                switch (ch2) {
+                    case 1: //client
                         break;
-                    case 2 : //projet
+                    case 2: //projet
                         break;
-                    case 3 : //Employé
+                    case 3: //Employé
                         break;
-                    case 4 : //Discipline
+                    case 4: //Discipline
                         break;
                 }
                 break;
-                
-            case 6 : //Quitter
+
+            case 6: //Quitter
                 System.exit(0);
                 break;
         }
-        
+
     }
-    
-    public void ajouterProjet(){
+
+    public void ajouterProjet() {
         Client c = null;
         //TODO rajouter regex pour le o/n
         String rep = vue.getMsg("Nouveau client ? (o/n)");
         rep.toLowerCase();
-        if(rep.equals("o")){
+        if (rep.equals("o")) {
             ajouterClient();
             c = modele.dernierClient();
-        }
-        
-        else{
+        } else {
             //TODO rechercher
         }
-            
-        
-                
+
         Projet.ProjetBuilder pb = vue.encodeProjet(c);
-        
-        try{
+
+        try {
             Projet p = pb.build();
             String msg = modele.ajouterObjet(p);
             vue.affMsg(msg);
-        }catch(Exception exc){
-            vue.affMsg("Erreur de création "+exc);
+        } catch (Exception exc) {
+            vue.affMsg("Erreur de création " + exc);
         }
-        
+
     }
-    
-    public void ajouterEmploye(){
+
+    public void ajouterEmploye() {
         Employe.EmployeBuilder eb = vue.encodeEmploye();
-        try{
+        try {
             Employe e = eb.build();
             String msg = modele.ajouterObjet(e);
             vue.affMsg(msg);
-        }catch(Exception exc){
-            vue.affMsg("Erreur de création "+exc);
+        } catch (Exception exc) {
+            vue.affMsg("Erreur de création " + exc);
         }
     }
-    
-    public void ajouterDiscipline(){
+
+    public void ajouterDiscipline() {
         Discipline d = vue.encodeDiscipline();
         String msg = modele.ajouterObjet(d);
         vue.affMsg(msg);
     }
 
-    private void ajouterClient() {
+    public void ajouterClient() {
         Client.ClientBuilder cb = vue.encodeClient();
-        try{
+        try {
             Client c = cb.build();
             String msg = modele.ajouterObjet(c);
             vue.affMsg(msg);
-        }catch (Exception exc){
+        } catch (Exception exc) {
             vue.affMsg("Erreur de création " + exc);
         }
-        
+
     }
-    
-    
-    
+
 }

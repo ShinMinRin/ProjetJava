@@ -201,4 +201,89 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    @Override
+    public Object getObject(Object o) {
+        String query;
+        Object o1 = null;
+        ResultSet rs = null;
+
+        //On vérifie que l'objet n'est pas null
+        if (o == null) {
+            return "Objet null. Recherche impossible";
+        }
+
+        //On détermine la table correspondante au type d'objet
+        if (o instanceof Projet) {
+            query = "SELECT * FROM PROJ_PROJET WHERE TITRE = ?";
+            String query2 = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = ?";
+            PreparedStatement pstm = null;
+
+            try {
+                pstm = dbconnect.prepareStatement(query);
+                pstm.setString(1, ((Projet) o).getTitre());
+                rs = pstm.executeQuery();
+                pstm = dbconnect.prepareStatement(query2);
+                ResultSet rsCli = pstm.executeQuery();
+                Client cli = null;
+
+                if (rsCli.next()) {
+                    String nom = rsCli.getString(2);
+                    String ville = rsCli.getString(3);
+                    String tel = rsCli.getString(4);
+
+                    Client.ClientBuilder cb = new Client.ClientBuilder();
+                    try {
+                        cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
+                    } catch (Exception e) {
+                        System.out.println("Erreur client " + e);
+                    } finally {
+                        try {
+                            if (rsCli != null) {
+                                rsCli.close();
+                            }
+                        } catch (SQLException e) {
+                            System.err.println("erreur de fermeture de resultset client " + e);
+                        }
+                    }
+
+                }
+
+                if (rs.next()) {
+                    String titre = rs.getString(2);
+                    String debut = (rs.getDate(4)).toString();
+                    String butoir = (rs.getDate(5)).toString();
+
+                    Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
+                    try {
+                        o1 = pb.setTitre(titre).setClient(cli).setDateDebut(debut).setDateButoir(butoir).build();
+                    } catch (Exception e) {
+                        System.out.println("Erreur projet " + e);
+                    }
+                }
+
+            } catch (Exception e) {
+                System.out.println("Erreur lors de la recherche de projet" + e);
+            } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture de resultset " + e);
+                }
+
+                try {
+                    if (pstm != null) {
+                        pstm.close();
+                    }
+                } catch (Exception e) {
+                    System.out.println("erreur de fermeture du preparedStatement " + e);
+                }
+
+            }
+
+        }
+
+        return o1;
+    }
 }
