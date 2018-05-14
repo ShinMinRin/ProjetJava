@@ -73,7 +73,7 @@ public class ProjModeleJDBC extends ProjModele {
                         pstm.close();
                     }
                 } catch (Exception e) {
-                    System.out.println("erreur de fermeture du preparedStatement " + e);
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
                 }
 
             }
@@ -97,15 +97,15 @@ public class ProjModeleJDBC extends ProjModele {
                 } else {
                     msg = "Ajout employé non effectué";
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 msg = "Erreur lors de l'ajout de l'employé " + e;
             } finally {
                 try {
                     if (pstm != null) {
                         pstm.close();
                     }
-                } catch (Exception e) {
-                    System.out.println("erreur de fermeture du preparedStatement " + e);
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
                 }
 
             }
@@ -127,15 +127,15 @@ public class ProjModeleJDBC extends ProjModele {
                 } else {
                     msg = "Ajout client non effectué";
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 msg = "Erreur lors de l'ajout du client " + e;
             } finally {
                 try {
                     if (pstm != null) {
                         pstm.close();
                     }
-                } catch (Exception e) {
-                    System.out.println("erreur de fermeture du preparedStatement " + e);
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
                 }
 
             }
@@ -155,15 +155,15 @@ public class ProjModeleJDBC extends ProjModele {
                 } else {
                     msg = "Ajout discipline non effectué";
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 msg = "Erreur lors de l'ajout de la discipline " + e;
             } finally {
                 try {
                     if (pstm != null) {
                         pstm.close();
                     }
-                } catch (Exception e) {
-                    System.out.println("erreur de fermeture du preparedStatement " + e);
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
                 }
 
             }
@@ -184,15 +184,15 @@ public class ProjModeleJDBC extends ProjModele {
                 } else {
                     msg = "Ajout projet non effectué";
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 msg = "Erreur lors de l'ajout du projet " + e;
             } finally {
                 try {
                     if (pstm != null) {
                         pstm.close();
                     }
-                } catch (Exception e) {
-                    System.out.println("erreur de fermeture du preparedStatement " + e);
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
                 }
 
             }
@@ -204,6 +204,7 @@ public class ProjModeleJDBC extends ProjModele {
     @Override
     public Object getObject(Object o) {
         String query;
+        PreparedStatement pstm = null;
         Object o1 = null;
         ResultSet rs = null;
 
@@ -215,54 +216,56 @@ public class ProjModeleJDBC extends ProjModele {
         //On détermine la table correspondante au type d'objet
         if (o instanceof Projet) {
             query = "SELECT * FROM PROJ_PROJET WHERE TITRE = ?";
-            String query2 = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = ?";
-            PreparedStatement pstm = null;
-
+            //TODO modifier la query avec une jointure pour éviter la 2e query
             try {
                 pstm = dbconnect.prepareStatement(query);
                 pstm.setString(1, ((Projet) o).getTitre());
                 rs = pstm.executeQuery();
-                pstm = dbconnect.prepareStatement(query2);
-                ResultSet rsCli = pstm.executeQuery();
                 Client cli = null;
 
-                if (rsCli.next()) {
-                    String nom = rsCli.getString(2);
-                    String ville = rsCli.getString(3);
-                    String tel = rsCli.getString(4);
-
-                    Client.ClientBuilder cb = new Client.ClientBuilder();
-                    try {
-                        cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
-                    } catch (Exception e) {
-                        System.out.println("Erreur client " + e);
-                    } finally {
-                        try {
-                            if (rsCli != null) {
-                                rsCli.close();
-                            }
-                        } catch (SQLException e) {
-                            System.err.println("erreur de fermeture de resultset client " + e);
-                        }
-                    }
-
-                }
-
                 if (rs.next()) {
+                    int idcli = rs.getInt(1);
                     String titre = rs.getString(2);
                     String debut = (rs.getDate(4)).toString();
                     String butoir = (rs.getDate(5)).toString();
+
+                    query = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = ?";
+                    pstm = dbconnect.prepareStatement(query);
+                    pstm.setInt(1, idcli);
+                    ResultSet rsCli = pstm.executeQuery();
+
+                    if (rsCli.next()) {
+                        String nom = rsCli.getString(2);
+                        String ville = rsCli.getString(3);
+                        String tel = rsCli.getString(4);
+
+                        Client.ClientBuilder cb = new Client.ClientBuilder();
+                        try {
+                            cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
+                        } catch (Exception e) {
+                            System.err.println("Erreur client " + e);
+                        } finally {
+                            try {
+                                if (rsCli != null) {
+                                    rsCli.close();
+                                }
+                            } catch (SQLException e) {
+                                System.err.println("erreur de fermeture de resultset client " + e);
+                            }
+                        }
+
+                    }
 
                     Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
                     try {
                         o1 = pb.setTitre(titre).setClient(cli).setDateDebut(debut).setDateButoir(butoir).build();
                     } catch (Exception e) {
-                        System.out.println("Erreur projet " + e);
+                        System.err.println("Erreur projet " + e);
                     }
                 }
 
-            } catch (Exception e) {
-                System.out.println("Erreur lors de la recherche de projet" + e);
+            } catch (SQLException e) {
+                System.err.println("Erreur lors de la recherche de projet" + e);
             } finally {
                 try {
                     if (rs != null) {
@@ -276,12 +279,90 @@ public class ProjModeleJDBC extends ProjModele {
                     if (pstm != null) {
                         pstm.close();
                     }
-                } catch (Exception e) {
-                    System.out.println("erreur de fermeture du preparedStatement " + e);
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
                 }
 
             }
 
+        }
+        
+        if(o instanceof Employe){
+            query = "SELECT * FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND GSM_EMP = ?";
+            
+            
+            try {
+                pstm = dbconnect.prepareStatement(query);
+                pstm.setString(1, ((Employe) o).getNom());
+                pstm.setString(2, ((Employe) o).getPrenom());
+                pstm.setString(3, ((Employe) o).getGsm());
+                rs = pstm.executeQuery();
+                
+                if(rs.next()){
+                    String nom = rs.getString(2);
+                    String prenom = rs.getString(3);
+                    String gsm = rs.getString(4);
+                    String email = rs.getString(5);
+                    
+                    Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+                    
+                    try {
+                        o1 = eb.setNom(nom).setEmail(email).setGsm(gsm).setPrenom(prenom).build();
+                    } catch (Exception e) {
+                        System.err.println("Erreur employé "+ e);
+                    }
+                    
+                }
+                
+            } catch (SQLException e) {
+                System.err.println("Erreur lors de la recherche employé "+e);
+            } finally{
+                try {
+                    if(rs != null){
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Erreur de fermeture du preparedStatement "+e);
+                }
+            }
+        }
+        
+        if(o instanceof Client){
+            query = "SELECT * FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ?";
+            
+            
+            try {
+                pstm = dbconnect.prepareStatement(query);
+                pstm.setString(1, ((Client) o).getNom());
+                pstm.setString(2, ((Client) o).getVille());
+                rs = pstm.executeQuery();
+                
+                if(rs.next()){
+                    String nom = rs.getString(2);
+                    String ville = rs.getString(3);
+                    String tel = rs.getString(4);
+                    
+                    Client.ClientBuilder cb = new Client.ClientBuilder();
+                    
+                    try {
+                        o1 = cb.setNom(nom).setTel(tel).setVille(ville).build();
+                    } catch (Exception e) {
+                        System.err.println("Erreur client "+ e);
+                    }
+                    
+                }
+                
+            } catch (SQLException e) {
+                System.err.println("Erreur lors de la recherche client "+e);
+            } finally{
+                try {
+                    if(rs != null){
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Erreur de fermeture du preparedStatement "+e);
+                }
+            }
         }
 
         return o1;
