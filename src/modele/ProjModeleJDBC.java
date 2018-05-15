@@ -238,7 +238,7 @@ public class ProjModeleJDBC extends ProjModele {
                     } catch (Exception e) {
                         System.err.println("Erreur client " + e);
                     }
-                    
+
                     Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
                     try {
                         o1 = pb.setTitre(titre).setClient(cli).setDateDebut(debut).setDateButoir(butoir).build();
@@ -350,110 +350,270 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     @Override
-    public List<Client> tousClients(){
+    public List<Client> tousClients() {
         String critere = "ORDER BY NOM_CLI";
-        
+
         String query = "SELECT * FROM PROJ_CLIENT " + critere;
         List<Client> lc = new ArrayList<>();
-        
+
         Statement stm = null;
         ResultSet rs = null;
-        
+
         try {
             stm = dbconnect.createStatement();
             rs = stm.executeQuery(query);
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 String nom = rs.getString("NOM_CLI");
                 String ville = rs.getString("VILLE_CLI");
                 String tel = rs.getString("TEL_CLI");
                 Client cli = null;
-                
+
                 Client.ClientBuilder cb = new Client.ClientBuilder();
                 try {
                     cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
                 } catch (Exception e) {
-                    System.err.println("Erreur client "+e);
+                    System.err.println("Erreur client " + e);
                 }
-                
+
                 lc.add(cli);
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche des clients "+ e);
+            System.err.println("Erreur lors de la recherche des clients " + e);
         } finally {
             try {
-                if(rs != null){
+                if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du ResultSet "+e);
+                System.err.println("Erreur de fermeture du ResultSet " + e);
             }
-            
+
             try {
-                if(stm != null){
+                if (stm != null) {
                     stm.close();
                 }
             } catch (SQLException e) {
                 System.err.println("Erreur de fermeture du Statement " + e);
             }
         }
-        
-        
+
         return lc;
     }
 
-    
     @Override
-    public List<Employe> tousEmployes(){
+    public List<Employe> tousEmployes() {
         String critere = "ORDER BY NOM_EMP,PRENOM_EMP,GSM_EMP";
-        
+
         String query = "SELECT * FROM PROJ_EMPLOYE " + critere;
         List<Employe> le = new ArrayList<>();
-        
+
         Statement stm = null;
         ResultSet rs = null;
-        
+
         try {
             stm = dbconnect.createStatement();
             rs = stm.executeQuery(query);
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 String nom = rs.getString("NOM_EMP");
                 String prenom = rs.getString("PRENOM_EMP");
                 String gsm = rs.getString("GSM_EMP");
                 String email = rs.getString("EMAIL_EMP");
                 Employe emp = null;
-                
+
                 Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
                 try {
                     emp = eb.setEmail(email).setGsm(gsm).setNom(nom).setPrenom(prenom).build();
                 } catch (Exception e) {
-                    System.err.println("Erreur employé "+e);
+                    System.err.println("Erreur employé " + e);
                 }
-                
+
                 le.add(emp);
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche des employés "+ e);
+            System.err.println("Erreur lors de la recherche des employés " + e);
         } finally {
             try {
-                if(rs != null){
+                if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du ResultSet "+e);
+                System.err.println("Erreur de fermeture du ResultSet " + e);
             }
-            
+
             try {
-                if(stm != null){
+                if (stm != null) {
                     stm.close();
                 }
             } catch (SQLException e) {
                 System.err.println("Erreur de fermeture du Statement " + e);
             }
         }
-        
-        
+
         return le;
+    }
+
+    @Override
+    public List<Projet> tousProjets() {
+        String critere = "ORDER BY CLIENT_PROJ, TITRE";
+
+        String query = "SELECT * FROM PROJ_PROJET P\n"
+                + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI\n"
+                + critere;
+        List<Projet> lp = new ArrayList<>();
+
+        Statement stm = null;
+        ResultSet rs = null;
+
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+
+            while (rs.next()) {
+                String titre = rs.getString("TITRE_PROJ");
+                String debut = (rs.getDate("DATE_DEBUT")).toString();
+                String butoir = (rs.getDate("DATE_BUTOIR")).toString();
+                String nom = rs.getString("NOM_CLI");
+                String ville = rs.getString("VILLE_CLI");
+                String tel = rs.getString("TEL_CLI");
+
+                Client cli = null;
+                Projet p = null;
+
+                Client.ClientBuilder cb = new Client.ClientBuilder();
+                try {
+                    cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur client " + e);
+                }
+
+                Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
+                try {
+                    p = pb.setClient(cli).setDateButoir(butoir).setDateDebut(debut).setTitre(titre).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur projet " + e);
+                }
+
+                lp.add(p);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des projets " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement " + e);
+            }
+        }
+
+        return lp;
+    }
+
+    //TODO Modifier le code pour les travaux
+    @Override
+    public List<Travail> tousTravaux() {
+        String critere = "ORDER BY ";
+
+        String query = "SELECT * FROM PROJ_TRAVAIL" + critere;
+        List<Travail> lt = new ArrayList<>();
+
+        Statement stm = null;
+        ResultSet rs = null;
+
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+
+            while (rs.next()) {
+                //Recupérer les données
+                //Ajouter à la liste
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des travaux " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement " + e);
+            }
+        }
+
+        return lt;
+    }
+
+    @Override
+    public List<Projet> listeProjetsClient(Client c) {
+        String critere = "ORDER BY TITRE";
+
+        String query = "SELECT * FROM PROJ_PROJET WHERE CLIENT_PROJ = (SELECT ID_CLI FROM PROJ_CLIENT "
+                + "WHERE CL.NOM_CLI = " + c.getNom() + "AND CL.VILLE_CLI = " + c.getVille()
+                + ")\n" + critere;
+        List<Projet> lp = new ArrayList<>();
+
+        Statement stm = null;
+        ResultSet rs = null;
+
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+
+            while (rs.next()) {
+                String titre = rs.getString("TITRE_PROJ");
+                String debut = (rs.getDate("DATE_DEBUT")).toString();
+                String butoir = (rs.getDate("DATE_BUTOIR")).toString();
+                
+                Projet p = null;
+
+                Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
+                try {
+                    p = pb.setClient(c).setDateButoir(butoir).setDateDebut(debut).setTitre(titre).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur projet " + e);
+                }
+
+                lp.add(p);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des projets " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement " + e);
+            }
+        }
+
+        return lp;
     }
 }
