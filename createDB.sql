@@ -3,8 +3,28 @@ CREATE TABLE Proj_Client (
     nom_cli VARCHAR2(100) NOT NULL,
     ville_cli VARCHAR2(100) NOT NULL,
     tel_cli VARCHAR2(20) NOT NULL,
-    PRIMARY KEY (id_cli)
+    CONSTRAINT PK_CLIENT PRIMARY KEY (id_cli),
+    CONSTRAINT UC_CLIENT UNIQUE (nom_cli, ville_cli, tel_cli)
 );
+
+CREATE SEQUENCE Proj_Client_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Client_trg
+BEFORE INSERT ON Proj_Client
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_cli IS NULL THEN
+            SELECT Proj_Client_Seq.nextval INTO :NEW.id_cli FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Client_trg ENABLE;
+
+
 
 CREATE TABLE Proj_Projet (
     id_proj INTEGER NOT NULL,
@@ -12,9 +32,28 @@ CREATE TABLE Proj_Projet (
     client_proj INTEGER NOT NULL,
     date_debut DATE NOT NULL,
     date_butoir DATE NOT NULL,
-    PRIMARY KEY (id_proj),
-    UNIQUE (titre_proj)
+    CONSTRAINT PK_PROJET PRIMARY KEY (id_proj),
+    CONSTRAINT UC_PROJET UNIQUE (titre_proj)
 );
+
+CREATE SEQUENCE Proj_Projet_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Projet_trg
+BEFORE INSERT ON Proj_Projet
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_proj IS NULL THEN
+            SELECT Proj_Projet_Seq.nextval INTO :NEW.id_proj FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Projet_trg ENABLE;
+
+
 
 CREATE TABLE Proj_Employe (
     id_emp INTEGER NOT NULL,
@@ -22,43 +61,159 @@ CREATE TABLE Proj_Employe (
     prenom_emp VARCHAR2(100) NOT NULL,
     gsm_emp VARCHAR2(15) NOT NULL,
     email_emp VARCHAR2(100) NOT NULL,
-    PRIMARY KEY (id_emp)
+    CONSTRAINT PK_EMPLOYE PRIMARY KEY (id_emp),
+    CONSTRAINT UC_EMPLOYE UNIQUE (nom_emp, prenom_emp, gsm_emp)
 );
 
+CREATE SEQUENCE Proj_Employe_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Employe_trg
+BEFORE INSERT ON Proj_Employe
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_emp IS NULL THEN
+            SELECT Proj_Employe_Seq.nextval INTO :NEW.id_emp FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Employe_trg ENABLE;
+
+
 CREATE TABLE Proj_Travail (
+    id_travail INTEGER NOT NULL,
     id_proj INTEGER NOT NULL,
     id_emp INTEGER NOT NULL,
     date_engagement INTEGER NOT NULL,
     pourcentage INTEGER NOT NULL,
-    CONSTRAINT PK_travail PRIMARY KEY (id_proj, id_emp)
+    CONSTRAINT PK_travail PRIMARY KEY (id_travail),
+    CONSTRAINT UC_travail UNIQUE (id_proj, id_emp)
 );
+
+CREATE SEQUENCE Proj_Travail_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Travail_trg
+BEFORE INSERT ON Proj_Travail
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_travail IS NULL THEN
+            SELECT Proj_Travail_Seq.nextval INTO :NEW.id_travail FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Travail_trg ENABLE;
+
 
 CREATE TABLE Proj_Discipline (
     id_disc INTEGER NOT NULL,
     nom_disc VARCHAR2(150) NOT NULL,
-    PRIMARY KEY (id_disc)
+    CONSTRAINT PK_DISCIPLINE PRIMARY KEY (id_disc),
+    CONSTRAINT UC_DISCIPLINE UNIQUE (nom_disc)
 );
 
+CREATE SEQUENCE Proj_Discipline_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Discipline_trg
+BEFORE INSERT ON Proj_Discipline
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_disc IS NULL THEN
+            SELECT Proj_Discipline_Seq.nextval INTO :NEW.id_disc FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Discipline_trg ENABLE;
+
+
 CREATE TABLE Proj_Temps (
+    id_temps INTEGER NOT NULL,
     id_proj INTEGER NOT NULL,
     id_disc INTEGER NOT NULL,
     nb_jh INTEGER NOT NULL,
-CONSTRAINT PK_temps PRIMARY KEY (id_proj, id_disc)
+    CONSTRAINT PK_temps PRIMARY KEY (id_temps),
+    CONSTRAINT UC_temps UNIQUE (id_proj, id_disc)
 );
+
+CREATE SEQUENCE Proj_Temps_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Temps_trg
+BEFORE INSERT ON Proj_Temps
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_Temps IS NULL THEN
+            SELECT Proj_Temps_Seq.nextval INTO :NEW.id_Temps FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Temps_trg ENABLE;
+
 
 CREATE TABLE Proj_Niveau (
     id_niv INTEGER NOT NULL,
     desc_niv VARCHAR2(150) NOT NULL,
-    PRIMARY KEY (id_niv),
-    UNIQUE (desc_niv)
+    CONSTRAINT PK_NIVEAU PRIMARY KEY (id_niv),
+    CONSTRAINT UC_NIVEAU UNIQUE (desc_niv)
 );
 
+CREATE SEQUENCE Proj_Niveau_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Niveau_trg
+BEFORE INSERT ON Proj_Niveau
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_niv IS NULL THEN
+            SELECT Proj_Niveau_Seq.nextval INTO :NEW.id_niv FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Niveau_trg ENABLE;
+
+
 CREATE TABLE Proj_Competence (
+    id_comp INTEGER NOT NULL,
     id_emp INTEGER NOT NULL,
     id_disc INTEGER NOT NULL,
     id_niv INTEGER NOT NULL,
-CONSTRAINT PK_competence PRIMARY KEY (id_emp, id_disc)
+    CONSTRAINT PK_competence PRIMARY KEY (id_comp),
+    CONSTRAINT UC_competence UNIQUE (id_emp, id_disc)
 );
+
+CREATE SEQUENCE Proj_Competence_Seq
+MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10; 
+
+CREATE OR REPLACE TRIGGER Proj_Competence_trg
+BEFORE INSERT ON Proj_Competence
+FOR EACH ROW
+BEGIN
+    <<COLUMN_SEQUENCES>>
+    BEGIN
+        IF INSERTING AND :NEW.id_comp IS NULL THEN
+            SELECT Proj_Competence_Seq.nextval INTO :NEW.id_comp FROM SYS.DUAL;
+        END IF;
+    END COLUMN_SEQUENCES;
+END;
+/
+ALTER TRIGGER Proj_Competence_trg ENABLE;
+
 
 ALTER TABLE Proj_Projet ADD FOREIGN KEY (client_proj) REFERENCES Proj_Client(id_cli);
 ALTER TABLE Proj_Travail ADD FOREIGN KEY (id_proj) REFERENCES Proj_Projet(id_proj);
