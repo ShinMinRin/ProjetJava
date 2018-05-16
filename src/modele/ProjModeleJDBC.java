@@ -38,6 +38,47 @@ public class ProjModeleJDBC extends ProjModele {
         //ne rien faire car données déjà présentes dans DB
     }
 
+    public int recupIdCli(Client c) {
+        int idCli = -1;
+
+        String query = "SELECT ID_CLI FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ? AND TEL_CLI = ?";
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, c.getNom());
+            pstm.setString(2, c.getVille());
+            pstm.setString(3, c.getTel());
+            rs = pstm.executeQuery();
+
+            if (rs.next()) {
+                idCli = rs.getInt("ID_CLI");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur dans la récupération de l'id client " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du preparedStatement " + e);
+            }
+        }
+
+        return idCli;
+    }
+
     @Override
     public String ajouterObjet(Object o) {
         String msg = "";
@@ -56,8 +97,9 @@ public class ProjModeleJDBC extends ProjModele {
             try {
                 pstm = dbconnect.prepareStatement(query);
                 pstm.setString(1, ((Projet) o).getTitre());
-                //TODO Récupérer l'id du client dans la BDD
-                //TODO Récupérer les dates en format Date
+                pstm.setInt(2, recupIdCli(((Projet) o).getClient()));
+                pstm.setString(3, ((Projet) o).getDateDebut().replace("/", "-"));
+                pstm.setString(4, ((Projet) o).getDateButoir().replace("/", "-"));
                 int n = pstm.executeUpdate();
 
                 if (n == 1) {
@@ -170,22 +212,27 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Travail) {
-            //TODO modifier la query en fonction de la table travail
-            query = "insert into PROJ_() VALUES ()";
+            query = "insert into PROJ_TRAVAIL(ID_PROJ, ID_EMP, DATE_ENGAGEMENT) VALUES (?,?,?)";
+            String idProj = "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = " + ((Travail) o).getProjet().getTitre();
+            String idEmp = "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = " + ((Travail) o).getEmploye().getNom()
+                    + " AND PRENOM_EMP = " + ((Travail) o).getEmploye().getPrenom() + " AND GSM_EMP = " + ((Travail) o).getEmploye().getGsm();
             PreparedStatement pstm = null;
 
             try {
                 pstm = dbconnect.prepareStatement(query);
-                //TODO ajouter les données dans la query
+                pstm.setString(1, idProj);
+                pstm.setString(2, idEmp);
+                pstm.setString(3, ((Travail) o).getDateEngagement().replace("/", "-"));
+
                 int n = pstm.executeUpdate();
 
                 if (n == 1) {
-                    msg = "Ajout projet effectué";
+                    msg = "Ajout travail effectué";
                 } else {
-                    msg = "Ajout projet non effectué";
+                    msg = "Ajout travail non effectué";
                 }
             } catch (SQLException e) {
-                msg = "Erreur lors de l'ajout du projet " + e;
+                msg = "Erreur lors de l'ajout du travail " + e;
             } finally {
                 try {
                     if (pstm != null) {
@@ -832,24 +879,27 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     @Override
-    //TODO compléter le code
     public String suppProjet(Projet p) {
         String msg;
-        String query = "";
+
+        //On supprime d'abord les travaux liés au projet
+        String query = "DELETE FROM PROJ_TRAVAIL WHERE ID_PROJ = (SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?";
         PreparedStatement pstm = null;
 
         try {
             pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, p.getTitre());
 
             int n = pstm.executeUpdate();
-            if (n == 1) {
-                msg = "Suppression du projet effectuée";
+
+            if (n > 0) {
+                msg = "Suppression des travaux liés au projet effectuée";
             } else {
-                msg = "Suppression du projet non effectuée (impossible ?)";
+                msg = "Aucun travail associé au projet";
             }
 
         } catch (SQLException e) {
-            msg = "Erreur lors de la suppression du projet " + e;
+            msg = "Erreur lors de la suppression des travaux liés au projet " + e;
         } finally {
             try {
                 if (pstm != null) {
@@ -857,6 +907,34 @@ public class ProjModeleJDBC extends ProjModele {
                 }
             } catch (SQLException e) {
                 msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+        
+        //On supprime ensuite le projet
+        query = "DELETE FROM PROJ_PROJET WHERE TITRE_PROJ = ? AND CLIENT = ?";
+       
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, p.getTitre());
+            pstm.setInt(2, recupIdCli(p.getClient()));            
+
+            int n = pstm.executeUpdate();
+
+            if (n == 1) {
+                msg += "Suppression du projet effectuée";
+            } else {
+                msg += "Suppression du projet non effectuée";
+            }
+
+        } catch (SQLException e) {
+            msg += "Erreur lors de la suppression du projet " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg += "Erreur de fermeture de preparedStatement " + e;
             }
         }
 
@@ -902,7 +980,7 @@ public class ProjModeleJDBC extends ProjModele {
     @Override
     public Client dernierClient() {
         String query = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = LAST_INSERT_ID()";
-        
+
         Statement stm = null;
         ResultSet rs = null;
         Client cli = null;
@@ -910,14 +988,14 @@ public class ProjModeleJDBC extends ProjModele {
         try {
             stm = dbconnect.createStatement();
             rs = stm.executeQuery(query);
-            
-            if(rs.next()){
+
+            if (rs.next()) {
                 String nom = rs.getString("NOM_CLI");
                 String ville = rs.getString("VILLE_CLI");
                 String tel = rs.getString("TEL_CLI");
-                
+
                 Client.ClientBuilder cb = new Client.ClientBuilder();
-                
+
                 try {
                     cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
                 } catch (Exception e) {
@@ -925,25 +1003,25 @@ public class ProjModeleJDBC extends ProjModele {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche du dernier client encodé "+e);
-        } finally{
+            System.err.println("Erreur lors de la recherche du dernier client encodé " + e);
+        } finally {
             try {
-                if(rs != null){
+                if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du ResultSet "+e);
+                System.err.println("Erreur de fermeture du ResultSet " + e);
             }
-            
+
             try {
-                if(stm != null){
+                if (stm != null) {
                     stm.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du Statement "+e);
+                System.err.println("Erreur de fermeture du Statement " + e);
             }
         }
-        
+
         return cli;
     }
 }
