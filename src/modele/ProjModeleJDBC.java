@@ -582,7 +582,7 @@ public class ProjModeleJDBC extends ProjModele {
                 String titre = rs.getString("TITRE_PROJ");
                 String debut = (rs.getDate("DATE_DEBUT")).toString();
                 String butoir = (rs.getDate("DATE_BUTOIR")).toString();
-                
+
                 Projet p = null;
 
                 Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
@@ -616,8 +616,7 @@ public class ProjModeleJDBC extends ProjModele {
 
         return lp;
     }
-    
-    
+
     @Override
     //TODO compléter le code
     public List<Travail> listeTravailEmploye(Employe emp) {
@@ -660,144 +659,291 @@ public class ProjModeleJDBC extends ProjModele {
         return lt;
     }
 
-
     @Override
-    public String changeVilleClient(Client c, String v){
+    public String changeVilleClient(Client c, String v) {
         String query = "UPDATE PROJ_CLIENT SET VILLE_CLI = ? WHERE NOM_CLI = ?";
         PreparedStatement pstm = null;
-        String msg; 
-        
+        String msg;
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, v);
             pstm.setString(2, c.getNom());
-            
+
             int n = pstm.executeUpdate();
-            if(n == 1){
+            if (n == 1) {
                 msg = "Changement de gsm effectué";
-            } else{
+            } else {
                 msg = "Changement d'adresse non effectué";
             }
         } catch (SQLException e) {
             msg = "Erreur lors du changement d'adresse " + e;
-        } finally{
+        } finally {
             try {
-                if(pstm != null){
+                if (pstm != null) {
                     pstm.close();
                 }
             } catch (SQLException e) {
                 msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
-    
- 
+
     @Override
-    public String changeTelClient(Client c, String t){
+    public String changeTelClient(Client c, String t) {
         String query = "UPDATE PROJ_CLIENT SET TEL_CLI = ? WHERE NOM_CLI = ?";
         PreparedStatement pstm = null;
-        String msg; 
-        
+        String msg;
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, t);
             pstm.setString(2, c.getNom());
-            
+
             int n = pstm.executeUpdate();
-            if(n == 1){
+            if (n == 1) {
                 msg = "Changement de téléphone effectué";
-            } else{
+            } else {
                 msg = "Changement de téléphone non effectué";
             }
         } catch (SQLException e) {
             msg = "Erreur lors du changement de téléphone " + e;
-        } finally{
+        } finally {
             try {
-                if(pstm != null){
+                if (pstm != null) {
                     pstm.close();
                 }
             } catch (SQLException e) {
                 msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
-    
-    
+
     @Override
-    public String changeGsmEmploye(Employe emp, String gsm){
+    public String changeGsmEmploye(Employe emp, String gsm) {
         String query = "UPDATE PROJ_EMPLOYE SET GSM_EMP = ? WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND EMAIL_EMP = ?";
         PreparedStatement pstm = null;
-        String msg; 
-        
+        String msg;
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, gsm);
             pstm.setString(2, emp.getNom());
             pstm.setString(3, emp.getPrenom());
             pstm.setString(4, emp.getEmail());
-            
+
             int n = pstm.executeUpdate();
-            if(n == 1){
+            if (n == 1) {
                 msg = "Changement de gsm effectué";
-            } else{
+            } else {
                 msg = "Changement de gsm non effectué";
             }
         } catch (SQLException e) {
             msg = "Erreur lors du changement de gsm " + e;
-        } finally{
+        } finally {
             try {
-                if(pstm != null){
+                if (pstm != null) {
                     pstm.close();
                 }
             } catch (SQLException e) {
                 msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
 
     @Override
-    public String changeEmailEmploye(Employe emp, String email){
+    public String changeEmailEmploye(Employe emp, String email) {
         String query = "UPDATE PROJ_EMPLOYE SET EMAIL_EMP = ? WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND GSM_EMP = ?";
         PreparedStatement pstm = null;
-        String msg; 
-        
+        String msg;
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, email);
             pstm.setString(2, emp.getNom());
             pstm.setString(3, emp.getPrenom());
             pstm.setString(4, emp.getGsm());
-            
+
             int n = pstm.executeUpdate();
-            if(n == 1){
+            if (n == 1) {
                 msg = "Changement d'email effectué";
-            } else{
+            } else {
                 msg = "Changement d'email non effectué";
             }
         } catch (SQLException e) {
             msg = "Erreur lors du changement d'email " + e;
-        } finally{
+        } finally {
             try {
-                if(pstm != null){
+                if (pstm != null) {
                     pstm.close();
                 }
             } catch (SQLException e) {
                 msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
-    
+
     @Override
-    public String changePourcentage(Travail t, float p){
+    public String changePourcentage(Travail t, float p) {
         //TODO prévoir un trigger pour ça
         return null;
+    }
+
+    @Override
+    public String suppClient(Client c) {
+        String msg;
+        String query = "DELETE FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ? AND TEL = ?";
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, c.getNom());
+            pstm.setString(2, c.getVille());
+            pstm.setString(3, c.getTel());
+
+            int n = pstm.executeUpdate();
+            if (n == 1) {
+                msg = "Suppression du client effectuée";
+            } else {
+                msg = "Suppression du client non effectuée (impossible ?)";
+            }
+
+        } catch (SQLException e) {
+            msg = "Erreur lors de la suppression du client " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+
+        return msg;
+    }
+
+    @Override
+    //TODO compléter le code
+    public String suppProjet(Projet p) {
+        String msg;
+        String query = "";
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+
+            int n = pstm.executeUpdate();
+            if (n == 1) {
+                msg = "Suppression du projet effectuée";
+            } else {
+                msg = "Suppression du projet non effectuée (impossible ?)";
+            }
+
+        } catch (SQLException e) {
+            msg = "Erreur lors de la suppression du projet " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+
+        return msg;
+    }
+
+    @Override
+    public String suppEmploye(Employe emp) {
+        String msg;
+        String query = "DELETE FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? "
+                + "AND GSM_EMP = ? AND EMAIL_EMP = ?";
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, emp.getNom());
+            pstm.setString(2, emp.getPrenom());
+            pstm.setString(3, emp.getGsm());
+            pstm.setString(4, emp.getEmail());
+
+            int n = pstm.executeUpdate();
+            if (n == 1) {
+                msg = "Suppression de l'employé effectuée";
+            } else {
+                msg = "Suppression de l'employé non effectuée";
+            }
+
+        } catch (SQLException e) {
+            msg = "Erreur lors de la suppression de l'employé " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+
+        return msg;
+    }
+
+    @Override
+    public Client dernierClient() {
+        String query = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = LAST_INSERT_ID()";
+        
+        Statement stm = null;
+        ResultSet rs = null;
+        Client cli = null;
+
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+            
+            if(rs.next()){
+                String nom = rs.getString("NOM_CLI");
+                String ville = rs.getString("VILLE_CLI");
+                String tel = rs.getString("TEL_CLI");
+                
+                Client.ClientBuilder cb = new Client.ClientBuilder();
+                
+                try {
+                    cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur client " + e);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche du dernier client encodé "+e);
+        } finally{
+            try {
+                if(rs != null){
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet "+e);
+            }
+            
+            try {
+                if(stm != null){
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement "+e);
+            }
+        }
+        
+        return cli;
     }
 }
