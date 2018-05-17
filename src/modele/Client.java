@@ -62,9 +62,9 @@ public class Client {
         }
         
         public Client build() throws Exception{
-            if(nom==null || ville==null || tel==null)
+            if(nom==null || ville==null)
                 throw new Exception("Informations manquantes");
-            if(nom.trim().equals("") || ville.trim().equals("") || tel.trim().equals(""))
+            if(nom.trim().equals("") || ville.trim().equals(""))
                 throw new Exception("Informations manquantes");
             return new Client(this);
         }

@@ -72,9 +72,9 @@ public class Projet {
         }
         
         public Projet build() throws Exception{
-            if(titre==null || client==null || dateDebut==null || dateButoir==null)
+            if(titre==null)
                 throw new Exception("Informations manquantes");
-            if(titre.trim().equals("") || dateDebut.trim().equals("") || dateButoir.trim().equals(""))
+            if(titre.trim().equals(""))
                     throw new Exception("Informations manquantes");
             return new Projet(this);
         }

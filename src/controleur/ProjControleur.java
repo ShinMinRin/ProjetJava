@@ -101,12 +101,16 @@ public class ProjControleur {
                     ch2 = vue.menuRech();
                     switch (ch2) {
                         case 1: //client
+                            rechClient();
                             break;
                         case 2: //projet
+                            rechProjet();
                             break;
                         case 3: //Employé
+                            rechEmploye();
                             break;
                         case 4: //Discipline
+                            rechDiscipline();
                             break;
                     }
                     break;
@@ -233,6 +237,56 @@ public class ProjControleur {
         
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
         //modele.changeEmailEmploye(emp, newMail);
+    }
+    
+    public void rechClient(){
+        Client cli = null;
+        Client.ClientBuilder cb = vue.encodeClient();
+        
+        try{
+            cli = cb.build();
+        } catch(Exception e){
+            vue.affMsg("Erreur client "+e);
+        }
+        
+        modele.getObject(cli);
+    }
+    
+    public void rechProjet(){
+        Projet p = null;
+        String titre = vue.getMsg("Titre du projet : ");
+        
+        Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
+        try{
+            p = pb.setTitre(titre).build();
+        }catch(Exception e){
+            vue.affMsg("Erreur projet "+e);
+        }
+        
+        modele.getObject(p);
+    }
+    
+    public void rechEmploye(){
+        Employe emp = null;
+        
+        String nom = vue.getMsg("Nom : ");
+        String prenom = vue.getMsg("Prénom : ");
+        String email = vue.getMsg("Email : ");
+        
+        Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+        try {
+            emp = eb.setEmail(email).setNom(nom).setPrenom(prenom).build();
+        } catch (Exception e) {
+            vue.affMsg("Erreur employé "+e);
+        }
+        
+        modele.getObject(emp);
+    }
+    
+    public void rechDiscipline(){
+        String nom = vue.getMsg("Nom : ");
+        Discipline d = new Discipline(nom);
+        modele.getObject(d);
     }
 
 }

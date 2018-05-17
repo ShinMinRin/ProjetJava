@@ -318,13 +318,13 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Employe) {
-            query = "SELECT * FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND GSM_EMP = ?";
+            query = "SELECT * FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND EMAIL_EMP = ?";
 
             try {
                 pstm = dbconnect.prepareStatement(query);
                 pstm.setString(1, ((Employe) o).getNom());
                 pstm.setString(2, ((Employe) o).getPrenom());
-                pstm.setString(3, ((Employe) o).getGsm());
+                pstm.setString(3, ((Employe) o).getEmail());
                 rs = pstm.executeQuery();
 
                 if (rs.next()) {
