@@ -396,6 +396,50 @@ public class ProjModeleJDBC extends ProjModele {
         return o1;
     }
 
+    public List<Discipline> toutesDisciplines(){
+        String critere = "ORDER BY NOM_DISC";
+        
+        String query = "SELECT * FROM PROJ_DISCIPLINE "+critere;
+        List<Discipline> ld = new ArrayList<>();
+        
+        Statement stm = null;
+        ResultSet rs = null;
+        
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+
+            while (rs.next()) {
+                String nom = rs.getString("NOM_DISC");
+                
+                Discipline d = new Discipline(nom);
+                ld.add(d);
+                
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des disciplines " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement " + e);
+            }
+        }
+
+        return ld;
+    }
+    
+    
     @Override
     public List<Client> tousClients() {
         String critere = "ORDER BY NOM_CLI";

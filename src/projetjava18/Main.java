@@ -1,7 +1,7 @@
 
 package projetjava18;
 
-import modele.ProjModele;
+import modele.ProjModeleJDBC;
 import controleur.ProjControleur;
 import vue.ProjVue;
 
@@ -13,11 +13,11 @@ public class Main {
     
     private ProjControleur pc;
     private ProjVue pv;
-    private ProjModele pm;
+    private ProjModeleJDBC pm;
     
     public Main(){
         pv = new ProjVue();
-        pm = new ProjModele();
+        pm = new ProjModeleJDBC();
         pm.populate();
         pc = new ProjControleur(pm,pv);
         pc.gestion();  

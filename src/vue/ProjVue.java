@@ -59,7 +59,7 @@ public class ProjVue {
     }
 
     public String getMsg() {
-        String msg = sc.nextLine();
+        String msg = sc.next();
         return msg;
     }
 
@@ -67,7 +67,7 @@ public class ProjVue {
         affMsg(msg);
         return getMsg();
     }
-
+    
     public void affListe(Collection liste) {
         int i = 1;
         for (Object o : liste) {
@@ -76,13 +76,13 @@ public class ProjVue {
     }
     
     
-    public Projet.ProjetBuilder encodeProjet(Client c){
+    public Projet.ProjetBuilder encodeProjet(){
         String titre = getMsg("Titre : ");
         String debut = getMsg("Date de début : ");
         String fin = getMsg("Date butoir : ");
         
         Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
-        pb.setTitre(titre).setClient(c).setDateButoir(fin).setDateDebut(debut);
+        pb.setTitre(titre).setDateButoir(fin).setDateDebut(debut);
         
         return pb;
     }
