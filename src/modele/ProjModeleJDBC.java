@@ -249,6 +249,8 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     @Override
+    //TODO Rajouter Discipline
+    //TODO Prévoir si plusieurs lignes récupérées
     public Object getObject(Object o) {
         String query;
         PreparedStatement pstm = null;
@@ -1018,6 +1020,38 @@ public class ProjModeleJDBC extends ProjModele {
             }
         }
 
+        return msg;
+    }
+    
+    
+    public String suppDiscipline(Discipline d){
+        String msg;
+        String query = "DELETE FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?";
+        PreparedStatement pstm = null;
+        
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(0, d.getNom());
+            
+            int n = pstm.executeUpdate();
+            if(n == 1){
+                msg = "Suppression de la discipline effectuée";
+            } else{
+                msg = "Suppression de la discipline non effectuée";
+            }
+        } catch (SQLException e) {
+            msg = "Erreur lors de la suppression de la discipline "+e;
+        } finally {
+            try {
+                if(pstm != null){
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement "+e;                            
+            }
+        }
+        
+        
         return msg;
     }
 

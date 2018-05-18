@@ -101,16 +101,20 @@ public class ProjControleur {
                     ch2 = vue.menuRech();
                     switch (ch2) {
                         case 1: //client
-                            rechClient();
+                            Client cli = rechClient();
+                            vue.affMsg(cli.toString());
                             break;
                         case 2: //projet
-                            rechProjet();
+                            Projet p = rechProjet();
+                            vue.affMsg(p.toString());
                             break;
                         case 3: //Employé
-                            rechEmploye();
+                            Employe emp = rechEmploye();
+                            vue.affMsg(emp.toString());
                             break;
                         case 4: //Discipline
-                            rechDiscipline();
+                            Discipline d = rechDiscipline();
+                            vue.affMsg(d.toString());
                             break;
                     }
                     break;
@@ -189,104 +193,129 @@ public class ProjControleur {
         }
 
     }
-    
-    public void listeClients(){
+
+    public void listeClients() {
         List<Client> l = modele.tousClients();
         vue.affListe(l);
     }
-    
-    public void listeProjets(){
+
+    public void listeProjets() {
         List<Projet> l = modele.tousProjets();
         vue.affListe(l);
     }
-    
-    public void listeEmployes(){
+
+    public void listeEmployes() {
         List<Employe> l = modele.tousEmployes();
         vue.affListe(l);
     }
-    
-    public void listeDisciplines(){
+
+    public void listeDisciplines() {
         List<Discipline> l = modele.toutesDisciplines();
         vue.affListe(l);
     }
-    
-    
-    public void modifVilleCli(){
+
+    public void modifVilleCli() {
         //TODO recherche du client
-        
+
         String newVille = vue.getMsg("Nouvelle ville : ");
         //modele.changeVilleClient(cli, newVille);
     }
-    
-    public void modifTelCli(){
+
+    public void modifTelCli() {
         //TODO recherche du client
-        
+
         String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
         //modele.changeTelClient(cli, newTel);
     }
-    
-    public void modifGsmEmp(){
+
+    public void modifGsmEmp() {
         //TODO recherche de l'employé
-        
+
         String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
         //modele.changeGsmEmploye(emp, newGsm);
     }
-    
-    public void modifEmailEmp(){
+
+    public void modifEmailEmp() {
         //TODO recherche de l'employé
-        
+
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
         //modele.changeEmailEmploye(emp, newMail);
     }
-    
-    public void rechClient(){
+
+    public Client rechClient() {
         Client cli = null;
         Client.ClientBuilder cb = vue.encodeClient();
-        
-        try{
-            cli = cb.build();
-        } catch(Exception e){
-            vue.affMsg("Erreur client "+e);
-        }
-        
-        modele.getObject(cli);
-    }
-    
-    public void rechProjet(){
-        Projet p = null;
-        String titre = vue.getMsg("Titre du projet : ");
-        
-        Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
-        try{
-            p = pb.setTitre(titre).build();
-        }catch(Exception e){
-            vue.affMsg("Erreur projet "+e);
-        }
-        
-        modele.getObject(p);
-    }
-    
-    public void rechEmploye(){
-        Employe emp = null;
-        
-        String nom = vue.getMsg("Nom : ");
-        String prenom = vue.getMsg("Prénom : ");
-        String email = vue.getMsg("Email : ");
-        
-        Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+
         try {
-            emp = eb.setEmail(email).setNom(nom).setPrenom(prenom).build();
+            cli = cb.build();
         } catch (Exception e) {
-            vue.affMsg("Erreur employé "+e);
+            vue.affMsg("Erreur client " + e);
         }
-        
-        modele.getObject(emp);
-    }
-    
-    public void rechDiscipline(){
-        String nom = vue.getMsg("Nom : ");
-        Discipline d = new Discipline(nom);
-        modele.getObject(d);
+
+        Object o = modele.getObject(cli);
+        return (Client) o;
     }
 
+    public Projet rechProjet() {
+        Projet p = null;
+        String titre = vue.getMsg("Titre du projet : ");
+
+        Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
+        try {
+            p = pb.setTitre(titre).build();
+        } catch (Exception e) {
+            vue.affMsg("Erreur projet " + e);
+        }
+
+        Object o = modele.getObject(p);
+        return (Projet) o;
+    }
+
+    public Employe rechEmploye() {
+        Employe emp = null;
+
+        String nom = vue.getMsg("Nom : ");
+        String prenom = vue.getMsg("Prénom : ");
+
+        Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+        try {
+            emp = eb.setNom(nom).setPrenom(prenom).build();
+        } catch (Exception e) {
+            vue.affMsg("Erreur employé " + e);
+        }
+
+        Object o = modele.getObject(emp);
+        return (Employe) o;
+    }
+
+    public Discipline rechDiscipline() {
+        String nom = vue.getMsg("Nom : ");
+        Discipline d = new Discipline(nom);
+        Object o = modele.getObject(d);
+        return (Discipline) o ;
+    }
+
+    public void suppClient() {
+        Client cli = rechClient();
+        String msg = modele.suppClient(cli);
+        vue.affMsg(msg);
+    }
+
+    public void suppProjet() {
+        Projet p = rechProjet();
+        String msg = modele.suppProjet(p);
+        vue.affMsg(msg);
+    }
+
+    public void suppEmploye() {
+        Employe emp = rechEmploye();
+        String msg = modele.suppEmploye(emp);
+        vue.affMsg(msg);
+    }
+
+    public void suppDiscipline() {
+        Discipline d = rechDiscipline();
+        String msg = modele.suppDiscipline(d);
+        vue.affMsg(msg);
+    }
 }

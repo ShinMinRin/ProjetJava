@@ -78,8 +78,8 @@ public class Employe {
         }
         
         public Employe build() throws Exception{
-            if(nom==null || prenom==null || email==null)throw new Exception("informations de base manquantes");
-            if(nom.trim().equals("") || prenom.trim().equals("") || email.trim().equals("")) throw new Exception("informations de base manquantes");
+            if(nom==null || prenom==null)throw new Exception("informations de base manquantes");
+            if(nom.trim().equals("") || prenom.trim().equals("")) throw new Exception("informations de base manquantes");
             return new Employe(this);
         }
         
