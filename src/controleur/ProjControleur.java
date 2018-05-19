@@ -150,7 +150,7 @@ public class ProjControleur {
             ajouterClient();
             c = modele.dernierClient();
         } else {
-            //TODO rechercher
+            c = rechClient();
         }
 
         Projet.ProjetBuilder pb = vue.encodeProjet();
@@ -215,31 +215,27 @@ public class ProjControleur {
     }
 
     public void modifVilleCli() {
-        //TODO recherche du client
-
+        Client cli = rechClient();
         String newVille = vue.getMsg("Nouvelle ville : ");
-        //modele.changeVilleClient(cli, newVille);
+        modele.changeVilleClient(cli, newVille);
     }
 
     public void modifTelCli() {
-        //TODO recherche du client
-
+        Client cli = rechClient();
         String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
-        //modele.changeTelClient(cli, newTel);
+        modele.changeTelClient(cli, newTel);
     }
 
     public void modifGsmEmp() {
-        //TODO recherche de l'employé
-
+        Employe emp = rechEmploye();
         String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
-        //modele.changeGsmEmploye(emp, newGsm);
+        modele.changeGsmEmploye(emp, newGsm);
     }
 
     public void modifEmailEmp() {
-        //TODO recherche de l'employé
-
+        Employe emp = rechEmploye();
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
-        //modele.changeEmailEmploye(emp, newMail);
+        modele.changeEmailEmploye(emp, newMail);
     }
 
     public Client rechClient() {
@@ -292,7 +288,7 @@ public class ProjControleur {
         String nom = vue.getMsg("Nom : ");
         Discipline d = new Discipline(nom);
         Object o = modele.getObject(d);
-        return (Discipline) o ;
+        return (Discipline) o;
     }
 
     public void suppClient() {
