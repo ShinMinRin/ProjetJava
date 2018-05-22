@@ -1033,6 +1033,38 @@ public class ProjModeleJDBC extends ProjModele {
 
         return msg;
     }
+    
+    public String changeDateButoirProj(Projet p, String dateB){
+        String msg;
+        String query ="UPDATE PROJ_PROJET SET DATE_BUTOIR = ? WHERE TITRE_PROJ = ?";
+        PreparedStatement pstm = null;
+        
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, dateB);
+            pstm.setString(2, p.getTitre());
+            
+            int n = pstm.executeUpdate();
+            
+            if(n == 1){
+                msg = "Changement de la date butoir effectué";
+            } else {
+                msg = "Changement de la date butoir non effectué";
+            }
+        } catch (SQLException e) {
+            msg = "Errreur lors du changement de la date butoir "+e;
+        } finally {
+            try {
+                if(pstm != null){
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture du preparedStatement "+e;
+            }
+        }
+        
+        return msg;
+    }
 
     @Override
     public String changePourcentage(Travail t, float p) {

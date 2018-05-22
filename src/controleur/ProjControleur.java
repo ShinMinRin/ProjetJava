@@ -83,17 +83,23 @@ public class ProjControleur {
                     ch2 = vue.menuModif();
                     switch (ch2) {
                         case 1: //ville cli
+                            vue.affMsg("Modifier la ville d'un client");
                             modifVilleCli();
                             break;
                         case 2: //tel cli
+                            vue.affMsg("Modifier le téléphone d'un client");
                             modifTelCli();
                             break;
-                        case 3: //TODO proj date butoir
+                        case 3: //proj date butoir
+                            vue.affMsg("Modifier la date butoir d'un projet");
+                            modifDateButoirProj();
                             break;
                         case 4: //gsm emp
+                            vue.affMsg("Modifier le gsm d'un employé");
                             modifGsmEmp();
                             break;
                         case 5: //email emp
+                            vue.affMsg("Modifier l'email d'un employé");
                             modifEmailEmp();
                             break;
                         case 6: //TODO compétence emp
@@ -105,18 +111,22 @@ public class ProjControleur {
                     ch2 = vue.menuRech();
                     switch (ch2) {
                         case 1: //client
+                            vue.affMsg("Rechercher un client");
                             Client cli = rechClient();
                             vue.affMsg(cli.toString());
                             break;
                         case 2: //projet
+                            vue.affMsg("Rechercher un projet");
                             Projet p = rechProjet();
                             vue.affMsg(p.toString());
                             break;
                         case 3: //Employé
+                            vue.affMsg("Rechercher un employé");
                             Employe emp = rechEmploye();
                             vue.affMsg(emp.toString());
                             break;
                         case 4: //Discipline
+                            vue.affMsg("Rechercher une discipline");
                             Discipline d = rechDiscipline();
                             vue.affMsg(d.toString());
                             break;
@@ -127,21 +137,26 @@ public class ProjControleur {
                     ch2 = vue.menuSupp();
                     switch (ch2) {
                         case 1: //client
+                            vue.affMsg("Supprimer un client");
                             suppClient();
                             break;
                         case 2: //projet
+                            vue.affMsg("Supprimer un projet");
                             suppProjet();
                             break;
                         case 3: //Employé
+                            vue.affMsg("Supprimer un employé");
                             suppEmploye();
                             break;
                         case 4: //Discipline
+                            vue.affMsg("Supprimer une discipline");
                             suppDiscipline();
                             break;
                     }
                     break;
 
                 case 6: //Quitter
+                    vue.affMsg("Fin du programme");
                     System.exit(0);
                     break;
             }
@@ -237,25 +252,31 @@ public class ProjControleur {
     public void modifVilleCli() {
         Client cli = rechClient();
         String newVille = vue.getMsg("Nouvelle ville : ");
-        modele.changeVilleClient(cli, newVille);
+        vue.affMsg(modele.changeVilleClient(cli, newVille));
     }
 
     public void modifTelCli() {
         Client cli = rechClient();
         String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
-        modele.changeTelClient(cli, newTel);
+        vue.affMsg(modele.changeTelClient(cli, newTel));
     }
 
     public void modifGsmEmp() {
         Employe emp = rechEmploye();
         String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
-        modele.changeGsmEmploye(emp, newGsm);
+        vue.affMsg(modele.changeGsmEmploye(emp, newGsm));
     }
 
     public void modifEmailEmp() {
         Employe emp = rechEmploye();
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
-        modele.changeEmailEmploye(emp, newMail);
+        vue.affMsg(modele.changeEmailEmploye(emp, newMail));
+    }
+    
+    public void modifDateButoirProj(){
+        Projet p = rechProjet();
+        String newDate = vue.getMsg("Nouvelle date butoir : ");
+        vue.affMsg(modele.changeDateButoirProj(p, newDate));
     }
 
     public Client rechClient() {
