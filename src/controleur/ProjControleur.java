@@ -65,10 +65,13 @@ public class ProjControleur {
                             vue.affMsg("Liste des disciplines");
                             listeDisciplines();
                             break;
-                        case 5: //TODO employés sur un projet 
-                            
+                        case 5: //employés sur un projet 
+                            vue.affMsg("Liste des employés sur un projet");
+                            listeEmpProj();
                             break;
-                        case 6: //TODO projets d'un employé précis
+                        case 6: //projets d'un employé précis
+                            vue.affMsg("Liste des projets d'un employé");
+                            listeProjEmp();
                             break;
                         case 7: //TODO compétences d'un employé
                             break;
@@ -216,6 +219,18 @@ public class ProjControleur {
 
     public void listeDisciplines() {
         List<Discipline> l = modele.toutesDisciplines();
+        vue.affListe(l);
+    }
+    
+    public void listeEmpProj(){
+        Projet p = rechProjet();
+        List<Employe> l = modele.listeEmployeDuProjet(p);
+        vue.affListe(l);
+    }
+    
+    public void listeProjEmp(){
+        Employe emp = rechEmploye();
+        List<Projet> l = modele.listeProjetParEmploye(emp);
         vue.affListe(l);
     }
 

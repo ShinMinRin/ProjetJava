@@ -574,8 +574,8 @@ public class ProjModeleJDBC extends ProjModele {
     public List<Projet> tousProjets() {
         String critere = "ORDER BY CLIENT_PROJ, TITRE";
 
-        String query = "SELECT * FROM PROJ_PROJET P\n"
-                + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI\n"
+        String query = "SELECT * FROM PROJ_PROJET P "
+                + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI "
                 + critere;
         List<Projet> lp = new ArrayList<>();
 
@@ -790,6 +790,74 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         return le;
+    }
+    
+    public List<Projet> listeProjetParEmploye(Employe emp){
+        String query = "SELECT * FROM PROJ_PROJET WHERE ID_PROJ IN ("
+                + "SELECT ID_PROJ FROM PROJ_TRAVAIL WHERE ID_EMP = ("
+                + "SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? ))"
+                + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI "
+                + "ORDER BY TITRE_PROJ";
+        
+        List<Projet> lp = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, emp.getNom());
+            pstm.setString(2, emp.getPrenom());
+            rs = pstm.executeQuery();
+            
+            while(rs.next()){
+                String titre = rs.getString("TITRE_PROJ");
+                String debut = (rs.getDate("DATE_DEBUT")).toString();
+                String butoir = (rs.getDate("DATE_BUTOIR")).toString();
+
+                String nom = rs.getString("NOM_CLI");
+                String ville = rs.getString("VILLE_CLI");
+                String tel = rs.getString("TEL_CLI");
+
+                Client cli = null;
+                Projet p = null;
+
+                Client.ClientBuilder cb = new Client.ClientBuilder();
+                try {
+                    cli = cb.setNom(nom).setTel(tel).setVille(ville).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur client " + e);
+                }
+
+                Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
+                try {
+                    p = pb.setClient(cli).setDateButoir(butoir).setDateDebut(debut).setTitre(titre).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur projet " + e);
+                }
+                lp.add(p);
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des projets d'un employé " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du preparedStatement " + e);
+            }
+        }
+        
+        return lp;
     }
 
     @Override
