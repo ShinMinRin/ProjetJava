@@ -249,8 +249,6 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     @Override
-    //TODO Rajouter Discipline
-    //TODO Prévoir si plusieurs lignes récupérées
     public Object getObject(Object o) {
         String query;
         PreparedStatement pstm = null;
@@ -390,7 +388,33 @@ public class ProjModeleJDBC extends ProjModele {
                         rs.close();
                     }
                 } catch (SQLException e) {
-                    System.err.println("Erreur de fermeture du preparedStatement " + e);
+                    System.err.println("Erreur de fermeture du ResulSet " + e);
+                }
+            }
+        }
+
+        if (o instanceof Discipline) {
+            query = "SELECT * FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?";
+
+            try {
+                pstm = dbconnect.prepareStatement(query);
+                pstm.setString(1, ((Discipline) o).getNom());
+                rs = pstm.executeQuery();
+
+                if (rs.next()) {
+                    String nom = rs.getString("NOM_DISC");
+                    o1 = new Discipline(nom);
+                }
+
+            } catch (SQLException e) {
+                System.err.println("Erreur lors de la recherche discipline " + e);
+            } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Erreur de fermeture du ResultSet");
                 }
             }
         }
@@ -398,25 +422,25 @@ public class ProjModeleJDBC extends ProjModele {
         return o1;
     }
 
-    public List<Discipline> toutesDisciplines(){
+    public List<Discipline> toutesDisciplines() {
         String critere = "ORDER BY NOM_DISC";
-        
-        String query = "SELECT * FROM PROJ_DISCIPLINE "+critere;
+
+        String query = "SELECT * FROM PROJ_DISCIPLINE " + critere;
         List<Discipline> ld = new ArrayList<>();
-        
+
         Statement stm = null;
         ResultSet rs = null;
-        
+
         try {
             stm = dbconnect.createStatement();
             rs = stm.executeQuery(query);
 
             while (rs.next()) {
                 String nom = rs.getString("NOM_DISC");
-                
+
                 Discipline d = new Discipline(nom);
                 ld.add(d);
-                
+
             }
         } catch (SQLException e) {
             System.err.println("Erreur lors de la recherche des disciplines " + e);
@@ -440,8 +464,7 @@ public class ProjModeleJDBC extends ProjModele {
 
         return ld;
     }
-    
-    
+
     @Override
     public List<Client> tousClients() {
         String critere = "ORDER BY NOM_CLI";
@@ -658,18 +681,20 @@ public class ProjModeleJDBC extends ProjModele {
     @Override
     public List<Projet> listeProjetsClient(Client c) {
         String critere = "ORDER BY TITRE";
-
         String query = "SELECT * FROM PROJ_PROJET WHERE CLIENT_PROJ = (SELECT ID_CLI FROM PROJ_CLIENT "
-                + "WHERE CL.NOM_CLI = " + c.getNom() + "AND CL.VILLE_CLI = " + c.getVille()
-                + ")\n" + critere;
+                + "WHERE CL.NOM_CLI = ? AND CL.VILLE_CLI = ?"
+                + ") " + critere;
+
         List<Projet> lp = new ArrayList<>();
 
-        Statement stm = null;
+        PreparedStatement pstm = null;
         ResultSet rs = null;
 
         try {
-            stm = dbconnect.createStatement();
-            rs = stm.executeQuery(query);
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, c.getNom());
+            pstm.setString(2, c.getVille());
+            rs = pstm.executeQuery();
 
             while (rs.next()) {
                 String titre = rs.getString("TITRE_PROJ");
@@ -699,15 +724,72 @@ public class ProjModeleJDBC extends ProjModele {
             }
 
             try {
-                if (stm != null) {
-                    stm.close();
+                if (pstm != null) {
+                    pstm.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du Statement " + e);
+                System.err.println("Erreur de fermeture du preparedStatement " + e);
             }
         }
 
         return lp;
+    }
+
+    public List<Employe> listeEmployeDuProjet(Projet p) {
+
+        String query = "SELECT * FROM PROJ_EMPLOYE WHERE ID_EMP IN("
+                + "SELECT ID_EMP FROM PROJ_TRAVAIL WHERE ID_PROJ ="
+                + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE PROJ = ?)"
+                + " ORDER BY DATE_ENGAGEMENT)";
+
+        List<Employe> le = new ArrayList<>();
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, p.getTitre());
+            rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                String nom = rs.getString("NOM_EMP");
+                String prenom = rs.getString("PRENOM_EMP");
+                String gsm = rs.getString("GSM_EMP");
+                String email = rs.getString("EMAIL_EMP");
+                Employe emp = null;
+
+                Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+                try {
+                    emp = eb.setEmail(email).setGsm(gsm).setNom(nom).setPrenom(prenom).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur employé " + e);
+                }
+
+                le.add(emp);
+
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des employés sur un projet " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du preparedStatement " + e);
+            }
+        }
+
+        return le;
     }
 
     @Override
@@ -955,14 +1037,14 @@ public class ProjModeleJDBC extends ProjModele {
                 msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
+
         //On supprime ensuite le projet
         query = "DELETE FROM PROJ_PROJET WHERE TITRE_PROJ = ? AND CLIENT = ?";
-       
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, p.getTitre());
-            pstm.setInt(2, recupIdCli(p.getClient()));            
+            pstm.setInt(2, recupIdCli(p.getClient()));
 
             int n = pstm.executeUpdate();
 
@@ -1022,36 +1104,34 @@ public class ProjModeleJDBC extends ProjModele {
 
         return msg;
     }
-    
-    
-    public String suppDiscipline(Discipline d){
+
+    public String suppDiscipline(Discipline d) {
         String msg;
         String query = "DELETE FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?";
         PreparedStatement pstm = null;
-        
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(0, d.getNom());
-            
+
             int n = pstm.executeUpdate();
-            if(n == 1){
+            if (n == 1) {
                 msg = "Suppression de la discipline effectuée";
-            } else{
+            } else {
                 msg = "Suppression de la discipline non effectuée";
             }
         } catch (SQLException e) {
-            msg = "Erreur lors de la suppression de la discipline "+e;
+            msg = "Erreur lors de la suppression de la discipline " + e;
         } finally {
             try {
-                if(pstm != null){
+                if (pstm != null) {
                     pstm.close();
                 }
             } catch (SQLException e) {
-                msg = "Erreur de fermeture de preparedStatement "+e;                            
+                msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
-        
+
         return msg;
     }
 

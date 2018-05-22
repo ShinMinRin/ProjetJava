@@ -65,11 +65,12 @@ public class ProjControleur {
                             vue.affMsg("Liste des disciplines");
                             listeDisciplines();
                             break;
-                        case 5: //employés sur un projet précis
+                        case 5: //TODO employés sur un projet 
+                            
                             break;
-                        case 6: //projets d'un employé précis
+                        case 6: //TODO projets d'un employé précis
                             break;
-                        case 7: //compétences d'un employé
+                        case 7: //TODO compétences d'un employé
                             break;
 
                     }
@@ -84,7 +85,7 @@ public class ProjControleur {
                         case 2: //tel cli
                             modifTelCli();
                             break;
-                        case 3: //proj date butoir
+                        case 3: //TODO proj date butoir
                             break;
                         case 4: //gsm emp
                             modifGsmEmp();
@@ -92,7 +93,7 @@ public class ProjControleur {
                         case 5: //email emp
                             modifEmailEmp();
                             break;
-                        case 6: //compétence emp
+                        case 6: //TODO compétence emp
                             break;
                     }
                     break;
@@ -123,12 +124,16 @@ public class ProjControleur {
                     ch2 = vue.menuSupp();
                     switch (ch2) {
                         case 1: //client
+                            suppClient();
                             break;
                         case 2: //projet
+                            suppProjet();
                             break;
                         case 3: //Employé
+                            suppEmploye();
                             break;
                         case 4: //Discipline
+                            suppDiscipline();
                             break;
                     }
                     break;
@@ -240,10 +245,12 @@ public class ProjControleur {
 
     public Client rechClient() {
         Client cli = null;
-        Client.ClientBuilder cb = vue.encodeClient();
+        String nom = vue.getMsg("Nom du client : ");
+        String ville = vue.getMsg("Ville : ");
+        Client.ClientBuilder cb = new Client.ClientBuilder();
 
         try {
-            cli = cb.build();
+            cli = cb.setNom(nom).setVille(ville).build();
         } catch (Exception e) {
             vue.affMsg("Erreur client " + e);
         }
