@@ -166,24 +166,41 @@ public class ProjControleur {
 
     public void ajouterProjet() {
         Client c = null;
-        //TODO rajouter regex pour le o/n
-        String rep = vue.getMsg("Nouveau client ? (o/n)");
+        String rep;
+        do {
+            rep = vue.getMsg("Nouveau client ? (o/n)");
+        } while (!rep.matches("[oOnN]"));
+
         rep.toLowerCase();
         if (rep.equals("o")) {
             ajouterClient();
             c = modele.dernierClient();
-        } else {
-            c = rechClient();
         }
+        if (rep.equals("n")) {
+            c = rechClient();
+            if (c == null) {
+                vue.affMsg("Client introuvable");
+                return;
+            } else {
+                vue.affMsg("Client trouvé :\n" + c);
+                rep = vue.getMsg("Est-ce le bon client ? (o/n)");
+                rep.toLowerCase();
+                if (rep.equals("n")) {
+                    return;
+                }
+                if (rep.equals("o")) {
+                    Projet.ProjetBuilder pb = vue.encodeProjet();
 
-        Projet.ProjetBuilder pb = vue.encodeProjet();
+                    try {
+                        Projet p = pb.setClient(c).build();
+                        String msg = modele.ajouterObjet(p);
+                        vue.affMsg(msg);
+                    } catch (Exception exc) {
+                        vue.affMsg("Erreur de création " + exc);
+                    }
+                }
+            }
 
-        try {
-            Projet p = pb.setClient(c).build();
-            String msg = modele.ajouterObjet(p);
-            vue.affMsg(msg);
-        } catch (Exception exc) {
-            vue.affMsg("Erreur de création " + exc);
         }
 
     }
@@ -236,14 +253,14 @@ public class ProjControleur {
         List<Discipline> l = modele.toutesDisciplines();
         vue.affListe(l);
     }
-    
-    public void listeEmpProj(){
+
+    public void listeEmpProj() {
         Projet p = rechProjet();
         List<Employe> l = modele.listeEmployeDuProjet(p);
         vue.affListe(l);
     }
-    
-    public void listeProjEmp(){
+
+    public void listeProjEmp() {
         Employe emp = rechEmploye();
         List<Projet> l = modele.listeProjetParEmploye(emp);
         vue.affListe(l);
@@ -252,28 +269,32 @@ public class ProjControleur {
     public void modifVilleCli() {
         Client cli = rechClient();
         String newVille = vue.getMsg("Nouvelle ville : ");
+        newVille.toLowerCase();
         vue.affMsg(modele.changeVilleClient(cli, newVille));
     }
 
     public void modifTelCli() {
         Client cli = rechClient();
         String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
+        newTel.toLowerCase();
         vue.affMsg(modele.changeTelClient(cli, newTel));
     }
 
     public void modifGsmEmp() {
         Employe emp = rechEmploye();
         String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
+        newGsm.toLowerCase();
         vue.affMsg(modele.changeGsmEmploye(emp, newGsm));
     }
 
     public void modifEmailEmp() {
         Employe emp = rechEmploye();
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
+        newMail.toLowerCase();
         vue.affMsg(modele.changeEmailEmploye(emp, newMail));
     }
-    
-    public void modifDateButoirProj(){
+
+    public void modifDateButoirProj() {
         Projet p = rechProjet();
         String newDate = vue.getMsg("Nouvelle date butoir : ");
         vue.affMsg(modele.changeDateButoirProj(p, newDate));
@@ -283,6 +304,8 @@ public class ProjControleur {
         Client cli = null;
         String nom = vue.getMsg("Nom du client : ");
         String ville = vue.getMsg("Ville : ");
+        nom.toLowerCase();
+        ville.toLowerCase();
         Client.ClientBuilder cb = new Client.ClientBuilder();
 
         try {
@@ -298,6 +321,7 @@ public class ProjControleur {
     public Projet rechProjet() {
         Projet p = null;
         String titre = vue.getMsg("Titre du projet : ");
+        titre.toLowerCase();
 
         Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
         try {
@@ -315,6 +339,8 @@ public class ProjControleur {
 
         String nom = vue.getMsg("Nom : ");
         String prenom = vue.getMsg("Prénom : ");
+        nom.toLowerCase();
+        prenom.toLowerCase();
 
         Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
         try {
@@ -329,6 +355,7 @@ public class ProjControleur {
 
     public Discipline rechDiscipline() {
         String nom = vue.getMsg("Nom : ");
+        nom.toLowerCase();
         Discipline d = new Discipline(nom);
         Object o = modele.getObject(d);
         return (Discipline) o;

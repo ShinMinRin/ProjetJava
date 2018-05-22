@@ -59,13 +59,20 @@ public class ProjVue {
     }
 
     public String getMsg() {
-        String msg = sc.next();
+        String msg = sc.nextLine();
+        System.out.println(msg);
         return msg;
     }
 
+    /**
+     * Saisie avec l'aide de Julien Schoenaers afin d'éviter le saut d'un champs de saisie
+     */
     public String getMsg(String msg) { //surcharge de la méthode getMsg
         affMsg(msg);
-        return getMsg();
+        Scanner scan = new Scanner(System.in);
+        String m = scan.nextLine();
+        //System.out.println(m);
+        return m;
     }
     
     public void affListe(Collection liste) {
@@ -80,6 +87,7 @@ public class ProjVue {
         String titre = getMsg("Titre : ");
         String debut = getMsg("Date de début : ");
         String fin = getMsg("Date butoir : ");
+        titre.toLowerCase();
         
         Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
         pb.setTitre(titre).setDateButoir(fin).setDateDebut(debut);
@@ -91,6 +99,8 @@ public class ProjVue {
         String nom = getMsg("Nom : ");
         String ville = getMsg("Ville : ");
         String tel = getMsg("Tel : ");
+        nom.toLowerCase();
+        ville.toLowerCase();
         
         Client.ClientBuilder cb = new Client.ClientBuilder();
         cb.setNom(nom).setTel(tel).setVille(ville);
@@ -103,6 +113,8 @@ public class ProjVue {
         String prenom = getMsg("Prénom : ");
         String gsm = getMsg("Numéro de gsm : ");
         String email = getMsg("Adresse email : ");
+        nom.toLowerCase();
+        prenom.toLowerCase();
         
         Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
         eb.setNom(nom).setPrenom(prenom).setGsm(gsm).setEmail(email);
@@ -112,6 +124,7 @@ public class ProjVue {
 
     public Discipline encodeDiscipline() {
         String nom = getMsg("Nom de la discipline : ");
+        nom.toLowerCase();
         return new Discipline(nom);
     }
     

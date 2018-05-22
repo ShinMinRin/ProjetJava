@@ -572,7 +572,7 @@ public class ProjModeleJDBC extends ProjModele {
 
     @Override
     public List<Projet> tousProjets() {
-        String critere = "ORDER BY CLIENT_PROJ, TITRE";
+        String critere = "ORDER BY CLIENT_PROJ, TITRE_PROJ";
 
         String query = "SELECT * FROM PROJ_PROJET P "
                 + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI "
