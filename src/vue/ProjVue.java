@@ -87,7 +87,7 @@ public class ProjVue {
         String titre = getMsg("Titre : ");
         String debut = getMsg("Date de début : ");
         String fin = getMsg("Date butoir : ");
-        titre.toLowerCase();
+        titre = titre.toLowerCase();
         
         Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
         pb.setTitre(titre).setDateButoir(fin).setDateDebut(debut);
@@ -99,8 +99,8 @@ public class ProjVue {
         String nom = getMsg("Nom : ");
         String ville = getMsg("Ville : ");
         String tel = getMsg("Tel : ");
-        nom.toLowerCase();
-        ville.toLowerCase();
+        nom = nom.toLowerCase();
+        ville = ville.toLowerCase();
         
         Client.ClientBuilder cb = new Client.ClientBuilder();
         cb.setNom(nom).setTel(tel).setVille(ville);
@@ -113,8 +113,8 @@ public class ProjVue {
         String prenom = getMsg("Prénom : ");
         String gsm = getMsg("Numéro de gsm : ");
         String email = getMsg("Adresse email : ");
-        nom.toLowerCase();
-        prenom.toLowerCase();
+        nom = nom.toLowerCase();
+        prenom = prenom.toLowerCase();
         
         Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
         eb.setNom(nom).setPrenom(prenom).setGsm(gsm).setEmail(email);
@@ -124,7 +124,7 @@ public class ProjVue {
 
     public Discipline encodeDiscipline() {
         String nom = getMsg("Nom de la discipline : ");
-        nom.toLowerCase();
+        nom = nom.toLowerCase();
         return new Discipline(nom);
     }
     

@@ -252,7 +252,7 @@ public class ProjModeleJDBC extends ProjModele {
     public Object getObject(Object o) {
         String query;
         PreparedStatement pstm = null;
-        Object o1 = null;
+        Object o1 = new Object();
         ResultSet rs = null;
 
         //On vérifie que l'objet n'est pas null
@@ -366,9 +366,9 @@ public class ProjModeleJDBC extends ProjModele {
                 rs = pstm.executeQuery();
 
                 if (rs.next()) {
-                    String nom = rs.getString(2);
-                    String ville = rs.getString(3);
-                    String tel = rs.getString(4);
+                    String nom = rs.getString("NOM_CLI");
+                    String ville = rs.getString("VILLE_CLI");
+                    String tel = rs.getString("TEL_CLI");
 
                     Client.ClientBuilder cb = new Client.ClientBuilder();
 
@@ -915,12 +915,12 @@ public class ProjModeleJDBC extends ProjModele {
 
             int n = pstm.executeUpdate();
             if (n == 1) {
-                msg = "Changement de gsm effectué";
+                msg = "Changement de ville effectué";
             } else {
-                msg = "Changement d'adresse non effectué";
+                msg = "Changement de ville non effectué";
             }
         } catch (SQLException e) {
-            msg = "Erreur lors du changement d'adresse " + e;
+            msg = "Erreur lors du changement de ville " + e;
         } finally {
             try {
                 if (pstm != null) {

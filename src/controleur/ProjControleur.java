@@ -112,22 +112,22 @@ public class ProjControleur {
                     switch (ch2) {
                         case 1: //client
                             vue.affMsg("Rechercher un client");
-                            Client cli = rechClient();
+                            Client cli = (Client) rechClient();
                             vue.affMsg(cli.toString());
                             break;
                         case 2: //projet
                             vue.affMsg("Rechercher un projet");
-                            Projet p = rechProjet();
+                            Projet p = (Projet) rechProjet();
                             vue.affMsg(p.toString());
                             break;
                         case 3: //Employé
                             vue.affMsg("Rechercher un employé");
-                            Employe emp = rechEmploye();
+                            Employe emp = (Employe) rechEmploye();
                             vue.affMsg(emp.toString());
                             break;
                         case 4: //Discipline
                             vue.affMsg("Rechercher une discipline");
-                            Discipline d = rechDiscipline();
+                            Discipline d = (Discipline) rechDiscipline();
                             vue.affMsg(d.toString());
                             break;
                     }
@@ -171,24 +171,25 @@ public class ProjControleur {
             rep = vue.getMsg("Nouveau client ? (o/n)");
         } while (!rep.matches("[oOnN]"));
 
-        rep.toLowerCase();
-        if (rep.equals("o")) {
+        if (rep.equalsIgnoreCase("o")) {
             ajouterClient();
             c = modele.dernierClient();
         }
-        if (rep.equals("n")) {
-            c = rechClient();
+        if (rep.equalsIgnoreCase("n")) {
+            c = (Client) rechClient();
             if (c == null) {
                 vue.affMsg("Client introuvable");
                 return;
             } else {
                 vue.affMsg("Client trouvé :\n" + c);
-                rep = vue.getMsg("Est-ce le bon client ? (o/n)");
-                rep.toLowerCase();
-                if (rep.equals("n")) {
+                do {
+                    rep = vue.getMsg("Est-ce le bon client ? (o/n)");
+                } while (!rep.matches("[oOnN]"));
+
+                if (rep.equalsIgnoreCase("n")) {
                     return;
                 }
-                if (rep.equals("o")) {
+                if (rep.equalsIgnoreCase("o")) {
                     Projet.ProjetBuilder pb = vue.encodeProjet();
 
                     try {
@@ -255,57 +256,55 @@ public class ProjControleur {
     }
 
     public void listeEmpProj() {
-        Projet p = rechProjet();
+        Projet p = (Projet) rechProjet();
         List<Employe> l = modele.listeEmployeDuProjet(p);
         vue.affListe(l);
     }
 
     public void listeProjEmp() {
-        Employe emp = rechEmploye();
+        Employe emp = (Employe) rechEmploye();
         List<Projet> l = modele.listeProjetParEmploye(emp);
         vue.affListe(l);
     }
 
     public void modifVilleCli() {
-        Client cli = rechClient();
+        Client cli = (Client) rechClient();
         String newVille = vue.getMsg("Nouvelle ville : ");
-        newVille.toLowerCase();
+        newVille = newVille.toLowerCase();
         vue.affMsg(modele.changeVilleClient(cli, newVille));
     }
 
     public void modifTelCli() {
-        Client cli = rechClient();
+        Client cli = (Client) rechClient();
         String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
-        newTel.toLowerCase();
         vue.affMsg(modele.changeTelClient(cli, newTel));
     }
 
     public void modifGsmEmp() {
-        Employe emp = rechEmploye();
+        Employe emp = (Employe) rechEmploye();
         String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
-        newGsm.toLowerCase();
         vue.affMsg(modele.changeGsmEmploye(emp, newGsm));
     }
 
     public void modifEmailEmp() {
-        Employe emp = rechEmploye();
+        Employe emp = (Employe) rechEmploye();
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
-        newMail.toLowerCase();
+        newMail = newMail.toLowerCase();
         vue.affMsg(modele.changeEmailEmploye(emp, newMail));
     }
 
     public void modifDateButoirProj() {
-        Projet p = rechProjet();
+        Projet p = (Projet) rechProjet();
         String newDate = vue.getMsg("Nouvelle date butoir : ");
         vue.affMsg(modele.changeDateButoirProj(p, newDate));
     }
 
-    public Client rechClient() {
+    public Object rechClient() {
         Client cli = null;
         String nom = vue.getMsg("Nom du client : ");
         String ville = vue.getMsg("Ville : ");
-        nom.toLowerCase();
-        ville.toLowerCase();
+        nom = nom.toLowerCase();
+        ville = ville.toLowerCase();
         Client.ClientBuilder cb = new Client.ClientBuilder();
 
         try {
@@ -315,13 +314,13 @@ public class ProjControleur {
         }
 
         Object o = modele.getObject(cli);
-        return (Client) o;
+        return o;
     }
 
-    public Projet rechProjet() {
+    public Object rechProjet() {
         Projet p = null;
         String titre = vue.getMsg("Titre du projet : ");
-        titre.toLowerCase();
+        titre = titre.toLowerCase();
 
         Projet.ProjetBuilder pb = new Projet.ProjetBuilder();
         try {
@@ -331,16 +330,16 @@ public class ProjControleur {
         }
 
         Object o = modele.getObject(p);
-        return (Projet) o;
+        return o;
     }
 
-    public Employe rechEmploye() {
+    public Object rechEmploye() {
         Employe emp = null;
 
         String nom = vue.getMsg("Nom : ");
         String prenom = vue.getMsg("Prénom : ");
-        nom.toLowerCase();
-        prenom.toLowerCase();
+        nom = nom.toLowerCase();
+        prenom = prenom.toLowerCase();
 
         Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
         try {
@@ -350,37 +349,37 @@ public class ProjControleur {
         }
 
         Object o = modele.getObject(emp);
-        return (Employe) o;
+        return o;
     }
 
-    public Discipline rechDiscipline() {
+    public Object rechDiscipline() {
         String nom = vue.getMsg("Nom : ");
-        nom.toLowerCase();
+        nom = nom.toLowerCase();
         Discipline d = new Discipline(nom);
         Object o = modele.getObject(d);
-        return (Discipline) o;
+        return o;
     }
 
     public void suppClient() {
-        Client cli = rechClient();
+        Client cli = (Client) rechClient();
         String msg = modele.suppClient(cli);
         vue.affMsg(msg);
     }
 
     public void suppProjet() {
-        Projet p = rechProjet();
+        Projet p = (Projet) rechProjet();
         String msg = modele.suppProjet(p);
         vue.affMsg(msg);
     }
 
     public void suppEmploye() {
-        Employe emp = rechEmploye();
+        Employe emp = (Employe) rechEmploye();
         String msg = modele.suppEmploye(emp);
         vue.affMsg(msg);
     }
 
     public void suppDiscipline() {
-        Discipline d = rechDiscipline();
+        Discipline d = (Discipline) rechDiscipline();
         String msg = modele.suppDiscipline(d);
         vue.affMsg(msg);
     }
