@@ -43,14 +43,14 @@ public class ProjControleur {
                             vue.affMsg("Ajout d'une discipline");
                             ajouterDiscipline();
                             break;
-                        case 5 :
+                        case 5:
                             vue.affMsg("Associer une discipline à un projet");
                             ajouterDiscToProj();
                             break;
-                        case 6 :
+                        case 6:
                             vue.affMsg("Associer un employé à un projet");
                             break;
-                        case 7 : 
+                        case 7:
                             vue.affMsg("Ajouter une compétence à un employé");
                             break;
                     }
@@ -222,33 +222,44 @@ public class ProjControleur {
         }
     }
 
+    public void ajouterTravail() {
+        Projet p = (Projet) rechProjet();
+        Employe emp = (Employe) rechEmploye();
+        String date = vue.getMsg("Date d'engagement sur le projet : ", vue.dateRegex);
+        float pc = Float.parseFloat(vue.getMsg("Pourcentage : ", "^100(\\.0{0,2}?)?$|^\\d{0,2}(\\.\\d{0,2})?$"));
+        Travail tv = new Travail(p, emp, date, pc);
+        String msg = modele.ajouterObjet(tv);
+        vue.affMsg(msg);
+    }
+
     public void ajouterDiscipline() {
         Discipline d = vue.encodeDiscipline();
         String msg = modele.ajouterObjet(d);
         vue.affMsg(msg);
     }
-    
-    public void ajouterDiscToProj(){
+
+    public void ajouterDiscToProj() {
         Projet p = (Projet) rechProjet();
         Boolean encore = true;
-        do{
+        do {
             List<Discipline> ld = modele.toutesDisciplines();
             vue.affListe(ld);
             int ch = Integer.parseInt(vue.getMsg("Votre choix (0 si absent de la liste) : ", "[0-9]+"));
             Discipline d;
-            if(ch!=0){
+            if (ch != 0) {
                 d = ld.get(ch - 1);
             } else {
                 ajouterDiscipline();
                 d = modele.derniereDiscipline();
             }
-            int jh = Integer.parseInt(vue.getMsg("Nombre de journée/homme prévue pour cette discipline ("+d.getNom()+") : ", "[0-9]+"));
+            int jh = Integer.parseInt(vue.getMsg("Nombre de journée/homme prévue pour cette discipline (" + d.getNom() + ") : ", "[0-9]+"));
             ajouterTemps(p, d, jh);
-            
+
             String rep = vue.getMsg("Voulez-vous ajouter une autre discipline pour ce projet ? (o/n)", "[oOnN]");
-            if(rep.equalsIgnoreCase("n"))
+            if (rep.equalsIgnoreCase("n")) {
                 encore = false;
-        }while(encore);
+            }
+        } while (encore);
     }
 
     public void ajouterClient() {
@@ -262,9 +273,9 @@ public class ProjControleur {
         }
 
     }
-    
-    public void ajouterTemps(Projet p, Discipline d, int nb_jh){
-        Temps t = new Temps(d,p,nb_jh);
+
+    public void ajouterTemps(Projet p, Discipline d, int nb_jh) {
+        Temps t = new Temps(d, p, nb_jh);
         String msg = modele.ajouterObjet(t);
         vue.affMsg(msg);
     }

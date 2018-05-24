@@ -149,8 +149,7 @@ public class ProjVue {
         nom = nom.toLowerCase();
         return new Discipline(nom);
     }
-    
-        
+   
     
 
 }
