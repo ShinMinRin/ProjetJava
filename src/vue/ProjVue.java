@@ -17,7 +17,8 @@ public class ProjVue {
     public String mailRegex = "^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$";
 
     private List<String> menuPrincipal = new ArrayList<>(Arrays.asList("Ajouter", "Listes", "Modifier", "Rechercher", "Supprimer", "Quitter"));
-    private List<String> menuAjout = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline"));
+    private List<String> menuAjout = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline", 
+            "Discipline à un projet", "Employé sur un projet", "Compétence à un employé"));
     private List<String> menuAffiche = new ArrayList<>(Arrays.asList("Liste des clients", "Liste des projets", "Liste des employés", "Liste des disciplines",
             "Liste des employés d'un projet", "Liste des projets d'un employé", "Liste des compétences d'un employé"));
     private List<String> menuModif = new ArrayList<>(Arrays.asList("Client - Modifier la ville", "Client - Modifier le téléphone",
@@ -103,7 +104,7 @@ public class ProjVue {
             affMsg((i++) + "." + o);
         }
     }
-
+   
     public Projet.ProjetBuilder encodeProjet() {
         String titre = getMsg("Titre : ", texteRegex);
         String debut = getMsg("Date de début : ", dateRegex);
@@ -149,6 +150,7 @@ public class ProjVue {
         return new Discipline(nom);
     }
     
+        
     
 
 }

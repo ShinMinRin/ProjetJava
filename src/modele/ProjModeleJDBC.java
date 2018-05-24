@@ -212,17 +212,18 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Travail) {
-            query = "insert into PROJ_TRAVAIL(ID_PROJ, ID_EMP, DATE_ENGAGEMENT) VALUES (?,?,?)";
-            String idProj = "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = " + ((Travail) o).getProjet().getTitre();
-            String idEmp = "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = " + ((Travail) o).getEmploye().getNom()
-                    + " AND PRENOM_EMP = " + ((Travail) o).getEmploye().getPrenom() + " AND GSM_EMP = " + ((Travail) o).getEmploye().getGsm();
+            query = "insert into PROJ_TRAVAIL(ID_PROJ, ID_EMP, DATE_ENGAGEMENT) VALUES ("
+                    + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?), "
+                    + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND GSM_EMP = ?), ?)";
             PreparedStatement pstm = null;
 
             try {
                 pstm = dbconnect.prepareStatement(query);
-                pstm.setString(1, idProj);
-                pstm.setString(2, idEmp);
-                pstm.setString(3, ((Travail) o).getDateEngagement().replace("/", "-"));
+                pstm.setString(1, ((Travail) o).getProjet().getTitre());
+                pstm.setString(2, ((Travail) o).getEmploye().getNom());
+                pstm.setString(3, ((Travail) o).getEmploye().getPrenom());
+                pstm.setString(4, ((Travail) o).getEmploye().getGsm());
+                pstm.setString(5, ((Travail) o).getDateEngagement().replace("/", "-"));
 
                 int n = pstm.executeUpdate();
 
@@ -233,6 +234,40 @@ public class ProjModeleJDBC extends ProjModele {
                 }
             } catch (SQLException e) {
                 msg = "Erreur lors de l'ajout du travail " + e;
+            } finally {
+                try {
+                    if (pstm != null) {
+                        pstm.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
+                }
+
+            }
+        }
+
+        if (o instanceof Temps) {
+            query = "INSERT INTO PROJ_TEMPS(NB_JH, ID_DISC, ID_PROJ) VALUES(?, "
+                    + "(SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?), "
+                    + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?))";
+
+            PreparedStatement pstm = null;
+
+            try {
+                pstm = dbconnect.prepareStatement(query);
+                pstm.setInt(1, ((Temps) o).getNb_jh());
+                pstm.setString(2, ((Temps) o).getDiscipline().getNom());
+                pstm.setString(3, ((Temps) o).getProjet().getTitre());
+                
+                int n = pstm.executeUpdate();
+
+                if (n == 1) {
+                    msg = "Ajout temps effectué";
+                } else {
+                    msg = "Ajout temps non effectué";
+                }
+            } catch (SQLException e) {
+                msg = "Erreur lors de l'ajout du temps " + e;
             } finally {
                 try {
                     if (pstm != null) {
@@ -790,25 +825,25 @@ public class ProjModeleJDBC extends ProjModele {
 
         return le;
     }
-    
-    public List<Projet> listeProjetParEmploye(Employe emp){
+
+    public List<Projet> listeProjetParEmploye(Employe emp) {
         String query = "SELECT * FROM PROJ_PROJET WHERE ID_PROJ IN ("
                 + "SELECT ID_PROJ FROM PROJ_TRAVAIL WHERE ID_EMP = ("
                 + "SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? ))"
                 + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI "
                 + "ORDER BY TITRE_PROJ";
-        
+
         List<Projet> lp = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, emp.getNom());
             pstm.setString(2, emp.getPrenom());
             rs = pstm.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 String titre = rs.getString("TITRE_PROJ");
                 String debut = (rs.getDate("DATE_DEBUT")).toString();
                 String butoir = (rs.getDate("DATE_BUTOIR")).toString();
@@ -835,7 +870,7 @@ public class ProjModeleJDBC extends ProjModele {
                 }
                 lp.add(p);
             }
-            
+
         } catch (SQLException e) {
             System.err.println("Erreur lors de la recherche des projets d'un employé " + e);
         } finally {
@@ -855,7 +890,7 @@ public class ProjModeleJDBC extends ProjModele {
                 System.err.println("Erreur de fermeture du preparedStatement " + e);
             }
         }
-        
+
         return lp;
     }
 
@@ -1032,36 +1067,36 @@ public class ProjModeleJDBC extends ProjModele {
 
         return msg;
     }
-    
-    public String changeDateButoirProj(Projet p, String dateB){
+
+    public String changeDateButoirProj(Projet p, String dateB) {
         String msg;
-        String query ="UPDATE PROJ_PROJET SET DATE_BUTOIR = ? WHERE TITRE_PROJ = ?";
+        String query = "UPDATE PROJ_PROJET SET DATE_BUTOIR = ? WHERE TITRE_PROJ = ?";
         PreparedStatement pstm = null;
-        
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, dateB);
             pstm.setString(2, p.getTitre());
-            
+
             int n = pstm.executeUpdate();
-            
-            if(n == 1){
+
+            if (n == 1) {
                 msg = "Changement de la date butoir effectué";
             } else {
                 msg = "Changement de la date butoir non effectué";
             }
         } catch (SQLException e) {
-            msg = "Errreur lors du changement de la date butoir "+e;
+            msg = "Errreur lors du changement de la date butoir " + e;
         } finally {
             try {
-                if(pstm != null){
+                if (pstm != null) {
                     pstm.close();
                 }
             } catch (SQLException e) {
-                msg = "Erreur de fermeture du preparedStatement "+e;
+                msg = "Erreur de fermeture du preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
 
@@ -1280,5 +1315,43 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         return cli;
+    }
+
+    public Discipline derniereDiscipline() {
+        String query = "SELECT * FROM PROJ_DISCIPLINE WHERE ID_DISC = (SELECT MAX(ID_DISC) FROM PROJ_DISCIPLINE)";
+
+        Statement stm = null;
+        ResultSet rs = null;
+        Discipline d = null;
+
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+
+            if (rs.next()) {
+                String nom = rs.getString("NOM_DISC");
+                d = new Discipline(nom);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche de la dernière discipline encodée " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement " + e);
+            }
+        }
+
+        return d;
     }
 }

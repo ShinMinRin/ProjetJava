@@ -43,6 +43,16 @@ public class ProjControleur {
                             vue.affMsg("Ajout d'une discipline");
                             ajouterDiscipline();
                             break;
+                        case 5 :
+                            vue.affMsg("Associer une discipline à un projet");
+                            ajouterDiscToProj();
+                            break;
+                        case 6 :
+                            vue.affMsg("Associer un employé à un projet");
+                            break;
+                        case 7 : 
+                            vue.affMsg("Ajouter une compétence à un employé");
+                            break;
                     }
                     break;
 
@@ -167,7 +177,7 @@ public class ProjControleur {
     public void ajouterProjet() {
         Client c = null;
         String rep;
-            rep = vue.getMsg("Nouveau client ? (o/n)","[oOnN]");
+        rep = vue.getMsg("Nouveau client ? (o/n)", "[oOnN]");
 
         if (rep.equalsIgnoreCase("o")) {
             ajouterClient();
@@ -180,7 +190,7 @@ public class ProjControleur {
                 return;
             } else {
                 vue.affMsg("Client trouvé :\n" + c);
-                    rep = vue.getMsg("Est-ce le bon client ? (o/n)", "[oOnN]");
+                rep = vue.getMsg("Est-ce le bon client ? (o/n)", "[oOnN]");
 
                 if (rep.equalsIgnoreCase("n")) {
                     return;
@@ -188,17 +198,17 @@ public class ProjControleur {
             }
 
         }
-        
+
         Projet.ProjetBuilder pb = vue.encodeProjet();
+        Projet p;
 
         try {
-            Projet p = pb.setClient(c).build();
+            p = pb.setClient(c).build();
             String msg = modele.ajouterObjet(p);
             vue.affMsg(msg);
         } catch (Exception exc) {
             vue.affMsg("Erreur de création " + exc);
         }
-
     }
 
     public void ajouterEmploye() {
@@ -217,6 +227,29 @@ public class ProjControleur {
         String msg = modele.ajouterObjet(d);
         vue.affMsg(msg);
     }
+    
+    public void ajouterDiscToProj(){
+        Projet p = (Projet) rechProjet();
+        Boolean encore = true;
+        do{
+            List<Discipline> ld = modele.toutesDisciplines();
+            vue.affListe(ld);
+            int ch = Integer.parseInt(vue.getMsg("Votre choix (0 si absent de la liste) : ", "[0-9]+"));
+            Discipline d;
+            if(ch!=0){
+                d = ld.get(ch - 1);
+            } else {
+                ajouterDiscipline();
+                d = modele.derniereDiscipline();
+            }
+            int jh = Integer.parseInt(vue.getMsg("Nombre de journée/homme prévue pour cette discipline ("+d.getNom()+") : ", "[0-9]+"));
+            ajouterTemps(p, d, jh);
+            
+            String rep = vue.getMsg("Voulez-vous ajouter une autre discipline pour ce projet ? (o/n)", "[oOnN]");
+            if(rep.equalsIgnoreCase("n"))
+                encore = false;
+        }while(encore);
+    }
 
     public void ajouterClient() {
         Client.ClientBuilder cb = vue.encodeClient();
@@ -228,6 +261,12 @@ public class ProjControleur {
             vue.affMsg("Erreur de création " + exc);
         }
 
+    }
+    
+    public void ajouterTemps(Projet p, Discipline d, int nb_jh){
+        Temps t = new Temps(d,p,nb_jh);
+        String msg = modele.ajouterObjet(t);
+        vue.affMsg(msg);
     }
 
     public void listeClients() {
@@ -262,7 +301,7 @@ public class ProjControleur {
     }
 
     public void listeProjEmp() {
-        Employe emp = (Employe)rechEmploye();
+        Employe emp = (Employe) rechEmploye();
         List<Projet> l = modele.listeProjetParEmploye(emp);
         vue.affListe(l);
         vue.affMsg("\n");
@@ -272,32 +311,32 @@ public class ProjControleur {
         Client cli = (Client) rechClient();
         String newVille = vue.getMsg("Nouvelle ville : ");
         newVille = newVille.toLowerCase();
-        vue.affMsg(modele.changeVilleClient(cli, newVille)+"\n");
+        vue.affMsg(modele.changeVilleClient(cli, newVille) + "\n");
     }
 
     public void modifTelCli() {
         Client cli = (Client) rechClient();
         String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
-        vue.affMsg(modele.changeTelClient(cli, newTel)+"\n");
+        vue.affMsg(modele.changeTelClient(cli, newTel) + "\n");
     }
 
     public void modifGsmEmp() {
         Employe emp = (Employe) rechEmploye();
         String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
-        vue.affMsg(modele.changeGsmEmploye(emp, newGsm)+"\n");
+        vue.affMsg(modele.changeGsmEmploye(emp, newGsm) + "\n");
     }
 
     public void modifEmailEmp() {
         Employe emp = (Employe) rechEmploye();
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
         newMail = newMail.toLowerCase();
-        vue.affMsg(modele.changeEmailEmploye(emp, newMail+"\n"));
+        vue.affMsg(modele.changeEmailEmploye(emp, newMail + "\n"));
     }
 
     public void modifDateButoirProj() {
         Projet p = (Projet) rechProjet();
         String newDate = vue.getMsg("Nouvelle date butoir : ");
-        vue.affMsg(modele.changeDateButoirProj(p, newDate)+"\n");
+        vue.affMsg(modele.changeDateButoirProj(p, newDate) + "\n");
     }
 
     public Object rechClient() {
