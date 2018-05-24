@@ -1176,8 +1176,39 @@ public class ProjModeleJDBC extends ProjModele {
 
     @Override
     public String changePourcentage(Travail t, float p) {
-        //TODO prévoir un trigger pour ça
-        return null;
+        String msg;
+        String query = "UPDATE PROJ_TRAVAIL SET POURCENTAGE = ? "
+                + "WHERE ID_PROJ = (SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?) "
+                + "AND ID_EMP = (SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? )";
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setFloat(1, p);
+            pstm.setString(2, t.getProjet().getTitre());
+            pstm.setString(3, t.getEmploye().getNom());
+            pstm.setString(4, t.getEmploye().getPrenom());
+
+            int n = pstm.executeUpdate();
+
+            if (n == 1) {
+                msg = "Changement du pourcentage effectué";
+            } else {
+                msg = "Changement du pourcentage non effectué";
+            }
+        } catch (SQLException e) {
+            msg = "Errreur lors du changement du pourcentage " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture du preparedStatement " + e;
+            }
+        }
+        
+        return msg;
     }
 
     @Override
