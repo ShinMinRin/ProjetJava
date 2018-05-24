@@ -258,7 +258,7 @@ public class ProjModeleJDBC extends ProjModele {
                 pstm.setInt(1, ((Temps) o).getNb_jh());
                 pstm.setString(2, ((Temps) o).getDiscipline().getNom());
                 pstm.setString(3, ((Temps) o).getProjet().getTitre());
-                
+
                 int n = pstm.executeUpdate();
 
                 if (n == 1) {
@@ -268,6 +268,41 @@ public class ProjModeleJDBC extends ProjModele {
                 }
             } catch (SQLException e) {
                 msg = "Erreur lors de l'ajout du temps " + e;
+            } finally {
+                try {
+                    if (pstm != null) {
+                        pstm.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.println("erreur de fermeture du preparedStatement " + e);
+                }
+
+            }
+        }
+        
+        if(o instanceof Competence){
+            query = "INSERT INTO PROJ_COMPETENCE(ID_EMP, ID_DISC, ID_NIV) VALUES("
+                    +"(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?), "
+                    +"(SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?), "
+                    +"(SELECT ID_NIV FROM PROJ_NIVEAU WHERE DESC_NIV = ?))";
+            
+            PreparedStatement pstm = null;
+                       
+            try {
+                pstm = dbconnect.prepareStatement(query);
+                pstm.setString(1, ((Competence) o).getPersonne().getNom());
+                pstm.setString(2, ((Competence) o).getPersonne().getPrenom());
+                pstm.setString(3, ((Competence) o).getDiscipline().getNom());
+                pstm.setString(4, ((Competence) o).getNiveau().getSignification());
+                int n = pstm.executeUpdate();
+
+                if (n == 1) {
+                    msg = "Ajout compétence effectué";
+                } else {
+                    msg = "Ajout compétence non effectué";
+                }
+            } catch (SQLException e) {
+                msg = "Erreur lors de l'ajout du compétence " + e;
             } finally {
                 try {
                     if (pstm != null) {
@@ -710,6 +745,45 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         return lt;
+    }
+
+    public List<Niveau> tousNiveaux() {
+        List<Niveau> ln = new ArrayList<>();
+        String query = "SELECT * FROM PROJ_NIVEAU ORDER BY ID_NIV";
+        Statement stm = null;
+        ResultSet rs = null;
+
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+
+            while (rs.next()) {
+                int degre = rs.getInt("ID_NIV");
+                String desc = rs.getString("DESC_NIV");
+                Niveau n = new Niveau(degre, desc);
+                ln.add(n);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des travaux " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement " + e);
+            }
+        }
+
+        return ln;
     }
 
     @Override

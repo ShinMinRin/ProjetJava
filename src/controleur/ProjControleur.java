@@ -221,6 +221,18 @@ public class ProjControleur {
             vue.affMsg("Erreur de création " + exc);
         }
     }
+    
+    public void ajouterCompetence(){
+        Employe emp = (Employe) rechEmploye();
+        Discipline d = (Discipline) rechDiscipline();
+        List<Niveau> ln = modele.tousNiveaux();
+        vue.affListe(ln);
+        int ch = Integer.parseInt(vue.getMsg("Quel niveau ? ", "[1-3]{1}"));
+        Niveau niv = ln.get(ch-1);
+        Competence c = new Competence(emp, d, niv);
+        String msg = modele.ajouterObjet(c);
+        vue.affMsg(msg);
+    }
 
     public void ajouterTravail() {
         Projet p = (Projet) rechProjet();
