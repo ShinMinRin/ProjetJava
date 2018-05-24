@@ -44,7 +44,7 @@ public class Employe {
 
     @Override
     public String toString() {
-        return "EmployeB{" + "nom=" + nom + ", prenom=" + prenom + ", gsm=" + gsm + ", email=" + email + '}';
+        return "Employe{" + "nom=" + nom + ", prenom=" + prenom + ", gsm=" + gsm + ", email=" + email + '}';
     }
 
     public static class EmployeBuilder {

@@ -167,9 +167,7 @@ public class ProjControleur {
     public void ajouterProjet() {
         Client c = null;
         String rep;
-        do {
-            rep = vue.getMsg("Nouveau client ? (o/n)");
-        } while (!rep.matches("[oOnN]"));
+            rep = vue.getMsg("Nouveau client ? (o/n)","[oOnN]");
 
         if (rep.equalsIgnoreCase("o")) {
             ajouterClient();
@@ -182,26 +180,23 @@ public class ProjControleur {
                 return;
             } else {
                 vue.affMsg("Client trouvé :\n" + c);
-                do {
-                    rep = vue.getMsg("Est-ce le bon client ? (o/n)");
-                } while (!rep.matches("[oOnN]"));
+                    rep = vue.getMsg("Est-ce le bon client ? (o/n)", "[oOnN]");
 
                 if (rep.equalsIgnoreCase("n")) {
                     return;
                 }
-                if (rep.equalsIgnoreCase("o")) {
-                    Projet.ProjetBuilder pb = vue.encodeProjet();
-
-                    try {
-                        Projet p = pb.setClient(c).build();
-                        String msg = modele.ajouterObjet(p);
-                        vue.affMsg(msg);
-                    } catch (Exception exc) {
-                        vue.affMsg("Erreur de création " + exc);
-                    }
-                }
             }
 
+        }
+        
+        Projet.ProjetBuilder pb = vue.encodeProjet();
+
+        try {
+            Projet p = pb.setClient(c).build();
+            String msg = modele.ajouterObjet(p);
+            vue.affMsg(msg);
+        } catch (Exception exc) {
+            vue.affMsg("Erreur de création " + exc);
         }
 
     }
@@ -238,65 +233,71 @@ public class ProjControleur {
     public void listeClients() {
         List<Client> l = modele.tousClients();
         vue.affListe(l);
+        vue.affMsg("\n");
     }
 
     public void listeProjets() {
         List<Projet> l = modele.tousProjets();
         vue.affListe(l);
+        vue.affMsg("\n");
     }
 
     public void listeEmployes() {
         List<Employe> l = modele.tousEmployes();
         vue.affListe(l);
+        vue.affMsg("\n");
     }
 
     public void listeDisciplines() {
         List<Discipline> l = modele.toutesDisciplines();
         vue.affListe(l);
+        vue.affMsg("\n");
     }
 
     public void listeEmpProj() {
         Projet p = (Projet) rechProjet();
         List<Employe> l = modele.listeEmployeDuProjet(p);
         vue.affListe(l);
+        vue.affMsg("\n");
     }
 
     public void listeProjEmp() {
-        Employe emp = (Employe) rechEmploye();
+        Employe emp = (Employe)rechEmploye();
         List<Projet> l = modele.listeProjetParEmploye(emp);
         vue.affListe(l);
+        vue.affMsg("\n");
     }
 
     public void modifVilleCli() {
         Client cli = (Client) rechClient();
         String newVille = vue.getMsg("Nouvelle ville : ");
         newVille = newVille.toLowerCase();
-        vue.affMsg(modele.changeVilleClient(cli, newVille));
+        vue.affMsg(modele.changeVilleClient(cli, newVille)+"\n");
     }
 
     public void modifTelCli() {
         Client cli = (Client) rechClient();
         String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
-        vue.affMsg(modele.changeTelClient(cli, newTel));
+        vue.affMsg(modele.changeTelClient(cli, newTel)+"\n");
     }
 
     public void modifGsmEmp() {
         Employe emp = (Employe) rechEmploye();
         String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
-        vue.affMsg(modele.changeGsmEmploye(emp, newGsm));
+        vue.affMsg(modele.changeGsmEmploye(emp, newGsm)+"\n");
     }
 
     public void modifEmailEmp() {
         Employe emp = (Employe) rechEmploye();
         String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
         newMail = newMail.toLowerCase();
-        vue.affMsg(modele.changeEmailEmploye(emp, newMail));
+        vue.affMsg(modele.changeEmailEmploye(emp, newMail+"\n"));
     }
 
     public void modifDateButoirProj() {
         Projet p = (Projet) rechProjet();
         String newDate = vue.getMsg("Nouvelle date butoir : ");
-        vue.affMsg(modele.changeDateButoirProj(p, newDate));
+        vue.affMsg(modele.changeDateButoirProj(p, newDate)+"\n");
     }
 
     public Object rechClient() {

@@ -318,13 +318,12 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Employe) {
-            query = "SELECT * FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND EMAIL_EMP = ?";
+            query = "SELECT * FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?";
 
             try {
                 pstm = dbconnect.prepareStatement(query);
                 pstm.setString(1, ((Employe) o).getNom());
                 pstm.setString(2, ((Employe) o).getPrenom());
-                pstm.setString(3, ((Employe) o).getEmail());
                 rs = pstm.executeQuery();
 
                 if (rs.next()) {
@@ -736,7 +735,7 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     public List<Employe> listeEmployeDuProjet(Projet p) {
-
+//TODO à vérifier - ne fonctionne pas
         String query = "SELECT * FROM PROJ_EMPLOYE WHERE ID_EMP IN("
                 + "SELECT ID_EMP FROM PROJ_TRAVAIL WHERE ID_PROJ ="
                 + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE PROJ = ?)"
@@ -1237,7 +1236,7 @@ public class ProjModeleJDBC extends ProjModele {
 
     @Override
     public Client dernierClient() {
-        String query = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = LAST_INSERT_ID()";
+        String query = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = (SELECT MAX(ID_CLI) FROM PROJ_CLIENT)";
 
         Statement stm = null;
         ResultSet rs = null;
