@@ -37,7 +37,7 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client{" + "nom=" + nom + ", ville=" + ville + ", tel=" + tel + "}";
+        return nom + " (" + ville + ", " + tel + ")";
     }
 
     public static class ClientBuilder {

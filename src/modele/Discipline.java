@@ -35,7 +35,7 @@ public class Discipline {
      */
     @Override
     public String toString() {
-        return "Discipline{" + "nom=" + nom + '}';
+        return nom;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class Projet {
 
     @Override
     public String toString() {
-        return "Projet{" + "titre=" + titre + ", client=" + client + ", dateDebut=" + dateDebut + ", dateButoir=" + dateButoir + '}';
+        return titre + "\nClient : " + client + "\nDébut : " + dateDebut + "\nDate butoir : " + dateButoir;
     }
 
     public static class ProjetBuilder {
@@ -70,15 +70,17 @@ public class Projet {
             this.dateButoir = dateButoir;
             return this;
         }
-        
-        public Projet build() throws Exception{
-            if(titre==null)
+
+        public Projet build() throws Exception {
+            if (titre == null) {
                 throw new Exception("Informations manquantes");
-            if(titre.trim().equals(""))
-                    throw new Exception("Informations manquantes");
+            }
+            if (titre.trim().equals("")) {
+                throw new Exception("Informations manquantes");
+            }
             return new Projet(this);
         }
-        
+
     }
 
 }

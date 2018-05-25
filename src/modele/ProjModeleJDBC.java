@@ -706,48 +706,7 @@ public class ProjModeleJDBC extends ProjModele {
         return lp;
     }
 
-    //TODO Modifier le code pour les travaux
-    @Override
-    public List<Travail> tousTravaux() {
-        String critere = "ORDER BY ";
-
-        String query = "SELECT * FROM PROJ_TRAVAIL" + critere;
-        List<Travail> lt = new ArrayList<>();
-
-        Statement stm = null;
-        ResultSet rs = null;
-
-        try {
-            stm = dbconnect.createStatement();
-            rs = stm.executeQuery(query);
-
-            while (rs.next()) {
-                //Recupérer les données
-                //Ajouter à la liste
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche des travaux " + e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du ResultSet " + e);
-            }
-
-            try {
-                if (stm != null) {
-                    stm.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du Statement " + e);
-            }
-        }
-
-        return lt;
-    }
-
+    
     public List<Niveau> tousNiveaux() {
         List<Niveau> ln = new ArrayList<>();
         String query = "SELECT * FROM PROJ_NIVEAU ORDER BY ID_NIV";
@@ -1016,48 +975,7 @@ public class ProjModeleJDBC extends ProjModele {
         return lc;
     }
 
-    @Override
-    //TODO compléter le code si besoin (méthode inutile ??)
-    public List<Travail> listeTravailEmploye(Employe emp) {
-        String critere = "ORDER BY ";
-
-        String query = "SELECT * FROM PROJ_TRAVAIL" + critere;
-        List<Travail> lt = new ArrayList<>();
-
-        Statement stm = null;
-        ResultSet rs = null;
-
-        try {
-            stm = dbconnect.createStatement();
-            rs = stm.executeQuery(query);
-
-            while (rs.next()) {
-                //Récupérer les données de la requête
-                //Ajouter à la liste
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche des travaux " + e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du ResultSet " + e);
-            }
-
-            try {
-                if (stm != null) {
-                    stm.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du Statement " + e);
-            }
-        }
-
-        return lt;
-    }
-
+ 
     @Override
     public String changeVilleClient(Client c, String v) {
         String query = "UPDATE PROJ_CLIENT SET VILLE_CLI = ? WHERE NOM_CLI = ?";

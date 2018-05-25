@@ -140,14 +140,7 @@ public class ProjModele {
         return mesProjets;
     }
 
-    /**
-     * Méthode permettant d'obtenir la liste des travaux
-     *
-     * @return tous les travaux (lien entre projet et employé)
-     */
-    public List<Travail> tousTravaux() {
-        return listeTravail;
-    }
+
 
     /**
      * Méthode permettant d'obtenir la liste des projets par client
@@ -175,32 +168,7 @@ public class ProjModele {
         return l;
     }
 
-    /**
-     * Méthode permettant d'obtenir la liste des projets par employé avec la
-     * date d'engagement et le pourcentage de travail pour l'employé
-     *
-     * @param e Employé concerné
-     * @return tous les détails des projets pour lesquels l'employé travaille
-     */
-    public List<Travail> listeTravailEmploye(Employe e) {
-        List<Travail> l = new ArrayList<>();
-
-        if (e == null) {
-            return l;
-        }
-        if (listeTravail.isEmpty()) {
-            return l;
-        }
-
-        for (Travail t : listeTravail) {
-            Employe emp = t.getEmploye();
-            if (emp.equals(e)) {
-                l.add(t);
-            }
-        }
-
-        return l;
-    }
+   
 
     /**
      * Méthode permettant de modifier la ville du client

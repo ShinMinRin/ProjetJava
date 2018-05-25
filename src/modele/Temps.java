@@ -45,9 +45,8 @@ public class Temps {
         this.nb_jh = nb_jh;
     }
 
-    
     /**
-     * Autres 
+     * Autres
      */
     @Override
     public int hashCode() {
@@ -77,9 +76,7 @@ public class Temps {
 
     @Override
     public String toString() {
-        return "Temps{" + "discipline=" + discipline + ", projet=" + projet + ", nb_jh=" + nb_jh + '}';
+        return nb_jh + " journées/homme prévues pour la discipline : " + discipline + "\n sur le projet : " + projet;
     }
-    
-    
 
 }

@@ -48,7 +48,7 @@ public class Niveau {
      */
     @Override
     public String toString() {
-        return "Niveau{" + "degre=" + degre + ", signification=" + signification + '}';
+        return degre + ". " + signification;
     }
 
     @Override
@@ -73,5 +73,4 @@ public class Niveau {
         return true;
     }
 
-    
 }
