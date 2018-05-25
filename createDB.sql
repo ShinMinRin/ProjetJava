@@ -221,3 +221,8 @@ ALTER TABLE Proj_Temps ADD FOREIGN KEY (id_proj) REFERENCES Proj_Projet(id_proj)
 ALTER TABLE Proj_Temps ADD FOREIGN KEY (id_disc) REFERENCES Proj_Discipline(id_disc);
 ALTER TABLE Proj_Competence ADD FOREIGN KEY (id_emp) REFERENCES Proj_Employe(id_emp);
 ALTER TABLE Proj_Competence ADD FOREIGN KEY (id_disc) REFERENCES Proj_Discipline(id_disc);
+
+
+INSERT INTO PROJ_NIVEAU(ID_NIV, DESC_NIV) VALUES(1, 'Peu compétent');
+INSERT INTO PROJ_NIVEAU(ID_NIV, DESC_NIV) VALUES(2, 'Moyennement compétent');
+INSERT INTO PROJ_NIVEAU(ID_NIV, DESC_NIV) VALUES(3, 'Très compétent');

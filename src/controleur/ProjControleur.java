@@ -240,7 +240,21 @@ public class ProjControleur {
 
     public void ajouterTravail() {
         Projet p = (Projet) rechProjet();
-        Employe emp = (Employe) rechEmploye();
+        Object o = rechEmploye();
+        Employe emp = null;
+        if (o==null){
+            String rep = vue.getMsg("Employé introuvable. Voulez-vous l'ajouter ? (o/n)", "[oOnN]");
+            if(rep.equalsIgnoreCase("o")){
+                ajouterEmploye();
+                emp = modele.dernierEmploye();
+            }
+            else{
+                return;
+            }
+        }
+        else{
+            emp = (Employe) o;
+        }
         String date = vue.getMsg("Date d'engagement sur le projet : ", vue.dateRegex);
         float pc = Float.parseFloat(vue.getMsg("Pourcentage : ", "^100(\\.0{0,2}?)?$|^\\d{0,2}(\\.\\d{0,2})?$"));
         Travail tv = new Travail(p, emp, date, pc);
@@ -423,7 +437,12 @@ public class ProjControleur {
         }
 
         Object o = modele.getObject(emp);
-        return o;
+        if(o instanceof Employe){
+            return o;
+        }
+        else {
+            return null;
+        }
     }
 
     public Object rechDiscipline() {

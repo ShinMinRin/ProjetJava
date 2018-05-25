@@ -706,7 +706,6 @@ public class ProjModeleJDBC extends ProjModele {
         return lp;
     }
 
-    
     public List<Niveau> tousNiveaux() {
         List<Niveau> ln = new ArrayList<>();
         String query = "SELECT * FROM PROJ_NIVEAU ORDER BY ID_NIV";
@@ -975,7 +974,6 @@ public class ProjModeleJDBC extends ProjModele {
         return lc;
     }
 
- 
     @Override
     public String changeVilleClient(Client c, String v) {
         String query = "UPDATE PROJ_CLIENT SET VILLE_CLI = ? WHERE NOM_CLI = ?";
@@ -1424,5 +1422,53 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         return d;
+    }
+
+    public Employe dernierEmploye() {
+        String query = "SELECT * FROM PROJ_EMPLOYE WHERE ID_EMP = (SELECT MAX(ID_EMP) FROM PROJ_EMPLOYE)";
+
+        Statement stm = null;
+        ResultSet rs = null;
+        Employe emp = null;
+
+        try {
+            stm = dbconnect.createStatement();
+            rs = stm.executeQuery(query);
+
+            if (rs.next()) {
+                String nom = rs.getString("NOM_EMP");
+                String prenom = rs.getString("PRENOM_EMP");
+                String gsm = rs.getString("GSM_EMP");
+                String email = rs.getString("EMAIL_EMP");
+                
+                Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
+                try {
+                    emp = eb.setEmail(email).setGsm(gsm).setNom(nom).setPrenom(prenom).build();
+                } catch (Exception e) {
+                    System.err.println("Erreur employé " + e);
+                }
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche du dernier employé encodé " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du Statement " + e);
+            }
+        }
+
+        return emp;
     }
 }
