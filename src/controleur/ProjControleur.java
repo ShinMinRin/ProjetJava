@@ -49,9 +49,11 @@ public class ProjControleur {
                             break;
                         case 6:
                             vue.affMsg("Associer un employé à un projet");
+                            ajouterTravail();
                             break;
                         case 7:
                             vue.affMsg("Ajouter une compétence à un employé");
+                            ajouterCompetence();
                             break;
                     }
                     break;
@@ -83,7 +85,9 @@ public class ProjControleur {
                             vue.affMsg("Liste des projets d'un employé");
                             listeProjEmp();
                             break;
-                        case 7: //TODO compétences d'un employé
+                        case 7: //compétences d'un employé
+                            vue.affMsg("Liste des compétences d'un employé");
+                            listeCompEmp();
                             break;
 
                     }
@@ -326,6 +330,13 @@ public class ProjControleur {
     public void listeProjEmp() {
         Employe emp = (Employe) rechEmploye();
         List<Projet> l = modele.listeProjetParEmploye(emp);
+        vue.affListe(l);
+        vue.affMsg("\n");
+    }
+    
+    public void listeCompEmp(){
+        Employe emp = (Employe) rechEmploye();
+        List<Competence> l = modele.listeCompEmp(emp);
         vue.affListe(l);
         vue.affMsg("\n");
     }

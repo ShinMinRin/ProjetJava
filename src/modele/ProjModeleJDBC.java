@@ -847,8 +847,8 @@ public class ProjModeleJDBC extends ProjModele {
 //TODO à vérifier - ne fonctionne pas
         String query = "SELECT * FROM PROJ_EMPLOYE WHERE ID_EMP IN("
                 + "SELECT ID_EMP FROM PROJ_TRAVAIL WHERE ID_PROJ ="
-                + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE PROJ = ?)"
-                + " ORDER BY DATE_ENGAGEMENT)";
+                + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE PROJ = ?) "
+                + "ORDER BY DATE_ENGAGEMENT)";
 
         List<Employe> le = new ArrayList<>();
         PreparedStatement pstm = null;
@@ -967,9 +967,55 @@ public class ProjModeleJDBC extends ProjModele {
 
         return lp;
     }
+    
+    public List<Competence> listeCompEmp(Employe emp){
+        List<Competence> lc = new ArrayList<>();
+        
+        String query = "SELECT * FROM PROJ_COMPETENCE C WHERE ID_EMP = "
+                +"(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?) "
+                + "INNER JOIN PROJ_DISCIPLINE D ON C.ID_DISC = D.ID_DISC "
+                + "INNER JOIN PROJ_NIVEAU N ON C.ID_NIV = N.ID_NIV";
+        
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, emp.getNom());
+            pstm.setString(2, emp.getPrenom());
+            
+            while(rs.next()){
+                Discipline d = new Discipline(rs.getString("NOM_DISC"));
+                Niveau n = new Niveau(rs.getInt("ID_NIV"), rs.getString("DESC_NIV"));
+                Competence c = new Competence(emp, d, n);
+                lc.add(c);
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche des compétences d'un employé " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du ResultSet " + e);
+            }
+
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur de fermeture du preparedStatement " + e);
+            }
+        }
+        
+        return lc;
+    }
 
     @Override
-    //TODO compléter le code
+    //TODO compléter le code si besoin (méthode inutile ??)
     public List<Travail> listeTravailEmploye(Employe emp) {
         String critere = "ORDER BY ";
 
