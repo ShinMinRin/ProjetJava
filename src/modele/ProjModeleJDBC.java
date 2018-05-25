@@ -212,9 +212,9 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         if (o instanceof Travail) {
-            query = "insert into PROJ_TRAVAIL(ID_PROJ, ID_EMP, DATE_ENGAGEMENT) VALUES ("
+            query = "insert into PROJ_TRAVAIL(ID_PROJ, ID_EMP, DATE_ENGAGEMENT, POURCENTAGE) VALUES ("
                     + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?), "
-                    + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND GSM_EMP = ?), ?)";
+                    + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND GSM_EMP = ?), ?, ?)";
             PreparedStatement pstm = null;
 
             try {
@@ -224,6 +224,7 @@ public class ProjModeleJDBC extends ProjModele {
                 pstm.setString(3, ((Travail) o).getEmploye().getPrenom());
                 pstm.setString(4, ((Travail) o).getEmploye().getGsm());
                 pstm.setString(5, ((Travail) o).getDateEngagement().replace("/", "-"));
+                pstm.setFloat(6, ((Travail) o).getPourcentage());
 
                 int n = pstm.executeUpdate();
 
@@ -279,15 +280,15 @@ public class ProjModeleJDBC extends ProjModele {
 
             }
         }
-        
-        if(o instanceof Competence){
+
+        if (o instanceof Competence) {
             query = "INSERT INTO PROJ_COMPETENCE(ID_EMP, ID_DISC, ID_NIV) VALUES("
-                    +"(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?), "
-                    +"(SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?), "
-                    +"(SELECT ID_NIV FROM PROJ_NIVEAU WHERE DESC_NIV = ?))";
-            
+                    + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?), "
+                    + "(SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?), "
+                    + "(SELECT ID_NIV FROM PROJ_NIVEAU WHERE DESC_NIV = ?))";
+
             PreparedStatement pstm = null;
-                       
+
             try {
                 pstm = dbconnect.prepareStatement(query);
                 pstm.setString(1, ((Competence) o).getPersonne().getNom());
@@ -844,11 +845,9 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     public List<Employe> listeEmployeDuProjet(Projet p) {
-//TODO à vérifier - ne fonctionne pas
         String query = "SELECT * FROM PROJ_EMPLOYE WHERE ID_EMP IN("
                 + "SELECT ID_EMP FROM PROJ_TRAVAIL WHERE ID_PROJ ="
-                + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE PROJ = ?) "
-                + "ORDER BY DATE_ENGAGEMENT)";
+                + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?))";
 
         List<Employe> le = new ArrayList<>();
         PreparedStatement pstm = null;
@@ -901,11 +900,12 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     public List<Projet> listeProjetParEmploye(Employe emp) {
-        String query = "SELECT * FROM PROJ_PROJET WHERE ID_PROJ IN ("
-                + "SELECT ID_PROJ FROM PROJ_TRAVAIL WHERE ID_EMP = ("
-                + "SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ? ))"
-                + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI "
-                + "ORDER BY TITRE_PROJ";
+        String query = "SELECT * FROM PROJ_PROJET P "
+                + "INNER JOIN PROJ_CLIENT CL ON CL.ID_CLI = P.CLIENT_PROJ "
+                + "WHERE P.ID_PROJ IN ("
+                + "SELECT T.ID_PROJ FROM PROJ_TRAVAIL T WHERE T.ID_EMP ="
+                + "(SELECT E.ID_EMP FROM PROJ_EMPLOYE E "
+                + "WHERE E.NOM_EMP = ? AND E.PRENOM_EMP = ?))";
 
         List<Projet> lp = null;
         PreparedStatement pstm = null;
@@ -967,30 +967,32 @@ public class ProjModeleJDBC extends ProjModele {
 
         return lp;
     }
-    
-    public List<Competence> listeCompEmp(Employe emp){
+
+    public List<Competence> listeCompEmp(Employe emp) {
         List<Competence> lc = new ArrayList<>();
-        
-        String query = "SELECT * FROM PROJ_COMPETENCE C WHERE ID_EMP = "
-                +"(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?) "
+
+        String query = "SELECT * FROM PROJ_COMPETENCE C "
                 + "INNER JOIN PROJ_DISCIPLINE D ON C.ID_DISC = D.ID_DISC "
-                + "INNER JOIN PROJ_NIVEAU N ON C.ID_NIV = N.ID_NIV";
-        
+                + "INNER JOIN PROJ_NIVEAU N ON C.ID_NIV = N.ID_NIV "
+                + "WHERE ID_EMP = "
+                + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?)";
+
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        
+
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, emp.getNom());
             pstm.setString(2, emp.getPrenom());
-            
-            while(rs.next()){
+            rs = pstm.executeQuery();
+
+            while (rs.next()) {
                 Discipline d = new Discipline(rs.getString("NOM_DISC"));
                 Niveau n = new Niveau(rs.getInt("ID_NIV"), rs.getString("DESC_NIV"));
                 Competence c = new Competence(emp, d, n);
                 lc.add(c);
             }
-            
+
         } catch (SQLException e) {
             System.err.println("Erreur lors de la recherche des compétences d'un employé " + e);
         } finally {
@@ -1010,7 +1012,7 @@ public class ProjModeleJDBC extends ProjModele {
                 System.err.println("Erreur de fermeture du preparedStatement " + e);
             }
         }
-        
+
         return lc;
     }
 
@@ -1253,7 +1255,7 @@ public class ProjModeleJDBC extends ProjModele {
                 msg = "Erreur de fermeture du preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
 
