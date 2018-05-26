@@ -77,15 +77,19 @@ public class ProjControleur {
                             vue.affMsg("Liste des disciplines");
                             listeDisciplines();
                             break;
-                        case 5: //employés sur un projet 
+                        case 5: //discipline d'un projet
+                            vue.affMsg("Liste des disciplines d'un projet");
+                            listeDiscProj();
+                            break;
+                        case 6: //employés sur un projet 
                             vue.affMsg("Liste des employés sur un projet");
                             listeEmpProj();
                             break;
-                        case 6: //projets d'un employé précis
+                        case 7: //projets d'un employé précis
                             vue.affMsg("Liste des projets d'un employé");
                             listeProjEmp();
                             break;
-                        case 7: //compétences d'un employé
+                        case 8: //compétences d'un employé
                             vue.affMsg("Liste des compétences d'un employé");
                             listeCompEmp();
                             break;
@@ -183,6 +187,16 @@ public class ProjControleur {
                         case 4: //Discipline
                             vue.affMsg("Supprimer une discipline");
                             suppDiscipline();
+                            break;
+                        case 5:
+                            vue.affMsg("Supprimer une discipline d'un projet");
+                            suppDiscProj();
+                            break;
+                        case 6:
+                            vue.affMsg("Supprimer un employé sur un projet");
+                            break;
+                        case 7:
+                            vue.affMsg("Supprimer une compétence à un employé");
                             break;
                     }
                     break;
@@ -321,7 +335,7 @@ public class ProjControleur {
         } else {
             vue.affListe(l);
         }
-        vue.affMsg("\n");
+
     }
 
     public void listeProjets() {
@@ -331,7 +345,7 @@ public class ProjControleur {
         } else {
             vue.affListe(l);
         }
-        vue.affMsg("\n");
+
     }
 
     public void listeEmployes() {
@@ -341,7 +355,7 @@ public class ProjControleur {
         } else {
             vue.affListe(l);
         }
-        vue.affMsg("\n");
+
     }
 
     public void listeDisciplines() {
@@ -351,7 +365,21 @@ public class ProjControleur {
         } else {
             vue.affListe(l);
         }
-        vue.affMsg("\n");
+
+    }
+
+    public void listeDiscProj() {
+        Projet p = (Projet) rechProjet();
+        if (p == null) {
+            vue.affMsg("Projet introuvable");
+        } else {
+            List<Discipline> l = modele.listeDiscProj(p);
+            if (l.isEmpty()) {
+                vue.affMsg("Aucune discipline associée à ce projet");
+            } else {
+                vue.affListe(l);
+            }
+        }
     }
 
     public void listeEmpProj() {
@@ -362,7 +390,7 @@ public class ProjControleur {
         } else {
             vue.affListe(l);
         }
-        vue.affMsg("\n");
+
     }
 
     public void listeProjEmp() {
@@ -373,7 +401,7 @@ public class ProjControleur {
         } else {
             vue.affListe(l);
         }
-        vue.affMsg("\n");
+
     }
 
     public void listeCompEmp() {
@@ -384,7 +412,7 @@ public class ProjControleur {
         } else {
             vue.affListe(l);
         }
-        vue.affMsg("\n");
+
     }
 
     public void modifVilleCli() {
@@ -573,5 +601,21 @@ public class ProjControleur {
             String msg = modele.suppDiscipline(d);
             vue.affMsg(msg);
         }
+    }
+
+    public void suppDiscProj() {
+        Projet p = (Projet) rechProjet();
+        if (p == null) {
+            vue.affMsg("Projet introuvable");
+        } else {
+            Discipline d = (Discipline) rechDiscipline();
+            if (d == null) {
+                vue.affMsg("Discipline introuvable");
+            } else {
+                String msg = modele.suppDiscProj(p, d);
+                vue.affMsg(msg);
+            }
+        }
+
     }
 }

@@ -10,22 +10,23 @@ import modele.*;
 public class ProjVue {
 
     private Scanner sc = new Scanner(System.in);
-    
+
     public String dateRegex = "^(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})([\\/])(0[1-9]{1}|1[0-2]{1})([\\/])([19|20]+[0-9]{2})$";
     public String texteRegex = "([aA-zZ]+ *-*)+";
     public String telRegex = "(0[0-9]{8,9})";
     public String mailRegex = "^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$";
 
     private List<String> menuPrincipal = new ArrayList<>(Arrays.asList("Ajouter", "Listes", "Modifier", "Rechercher", "Supprimer", "Quitter"));
-    private List<String> menuAjout = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline", 
+    private List<String> menuAjout = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline",
             "Discipline à un projet", "Employé sur un projet", "Compétence à un employé"));
     private List<String> menuAffiche = new ArrayList<>(Arrays.asList("Liste des clients", "Liste des projets", "Liste des employés", "Liste des disciplines",
-            "Liste des employés d'un projet", "Liste des projets d'un employé", "Liste des compétences d'un employé"));
+            "Liste des disciplines d'un projet", "Liste des employés d'un projet", "Liste des projets d'un employé", "Liste des compétences d'un employé"));
     private List<String> menuModif = new ArrayList<>(Arrays.asList("Client - Modifier la ville", "Client - Modifier le téléphone",
             "Projet - Modifier la date butoir",
             "Employé - Modifier le gsm", "Employé - Modifier l'email", "Employé - Modifier un niveau de compétence"));
     private List<String> menuRech = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline"));
-    private List<String> menuSupp = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline"));
+    private List<String> menuSupp = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline",
+            "Discipline à un projet", "Employé sur un projet", "Compétence à un employé"));
 
     public int menuPrincipal() {
         affListe(menuPrincipal);
@@ -103,8 +104,9 @@ public class ProjVue {
         for (Object o : liste) {
             affMsg((i++) + ". " + o);
         }
+        affMsg("\n");
     }
-   
+
     public Projet.ProjetBuilder encodeProjet() {
         affMsg("Encodage Projet");
         String titre = getMsg("Titre : ", texteRegex);
@@ -135,7 +137,7 @@ public class ProjVue {
     public Employe.EmployeBuilder encodeEmploye() {
         affMsg("Encodage Employé");
         String nom = getMsg("Nom : ", texteRegex);
-        String prenom = getMsg("Prénom : ",texteRegex);
+        String prenom = getMsg("Prénom : ", texteRegex);
         String gsm = getMsg("Numéro de gsm : ", telRegex);
         String email = getMsg("Adresse email : ", mailRegex);
         nom = nom.toLowerCase();
@@ -152,7 +154,5 @@ public class ProjVue {
         nom = nom.toLowerCase();
         return new Discipline(nom);
     }
-   
-    
 
 }
