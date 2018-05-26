@@ -38,7 +38,7 @@ public class Projet {
 
     @Override
     public String toString() {
-        return titre + "\nClient : " + client + "\nDébut : " + dateDebut + "\nDate butoir : " + dateButoir;
+        return titre + "\nClient : " + client + "\nDébut : " + dateDebut + "\nDate butoir : " + dateButoir + "\n";
     }
 
     public static class ProjetBuilder {

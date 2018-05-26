@@ -867,7 +867,7 @@ public class ProjModeleJDBC extends ProjModele {
                 + "(SELECT E.ID_EMP FROM PROJ_EMPLOYE E "
                 + "WHERE E.NOM_EMP = ? AND E.PRENOM_EMP = ?))";
 
-        List<Projet> lp = null;
+        List<Projet> lp = new ArrayList<>();
         PreparedStatement pstm = null;
         ResultSet rs = null;
 

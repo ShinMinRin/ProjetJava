@@ -314,46 +314,74 @@ public class ProjControleur {
 
     public void listeClients() {
         List<Client> l = modele.tousClients();
-        vue.affListe(l);
+        if (l.isEmpty()) {
+            vue.affMsg("Aucune donnée à afficher");
+        } else {
+            vue.affListe(l);
+        }
         vue.affMsg("\n");
     }
 
     public void listeProjets() {
         List<Projet> l = modele.tousProjets();
-        vue.affListe(l);
+        if (l.isEmpty()) {
+            vue.affMsg("Aucune donnée à afficher");
+        } else {
+            vue.affListe(l);
+        }
         vue.affMsg("\n");
     }
 
     public void listeEmployes() {
         List<Employe> l = modele.tousEmployes();
-        vue.affListe(l);
+        if (l.isEmpty()) {
+            vue.affMsg("Aucune donnée à afficher");
+        } else {
+            vue.affListe(l);
+        }
         vue.affMsg("\n");
     }
 
     public void listeDisciplines() {
         List<Discipline> l = modele.toutesDisciplines();
-        vue.affListe(l);
+        if (l.isEmpty()) {
+            vue.affMsg("Aucune donnée à afficher");
+        } else {
+            vue.affListe(l);
+        }
         vue.affMsg("\n");
     }
 
     public void listeEmpProj() {
         Projet p = (Projet) rechProjet();
         List<Employe> l = modele.listeEmployeDuProjet(p);
-        vue.affListe(l);
+        if (l.isEmpty()) {
+            vue.affMsg("Aucune donnée à afficher");
+        } else {
+            vue.affListe(l);
+        }
         vue.affMsg("\n");
     }
 
     public void listeProjEmp() {
         Employe emp = (Employe) rechEmploye();
         List<Projet> l = modele.listeProjetParEmploye(emp);
-        vue.affListe(l);
+        if (l.isEmpty()) {
+            vue.affMsg("Aucune donnée à afficher");
+        } else {
+            vue.affListe(l);
+        }
         vue.affMsg("\n");
     }
 
     public void listeCompEmp() {
         Employe emp = (Employe) rechEmploye();
         List<Competence> l = modele.listeCompEmp(emp);
-        vue.affListe(l);
+        if (l.isEmpty()) {
+            vue.affMsg("Aucune donnée à afficher");
+        } else {
+            vue.affListe(l);
+        }
         vue.affMsg("\n");
     }
 

@@ -101,11 +101,12 @@ public class ProjVue {
     public void affListe(Collection liste) {
         int i = 1;
         for (Object o : liste) {
-            affMsg((i++) + "." + o);
+            affMsg((i++) + ". " + o);
         }
     }
    
     public Projet.ProjetBuilder encodeProjet() {
+        affMsg("Encodage Projet");
         String titre = getMsg("Titre : ", texteRegex);
         String debut = getMsg("Date de début : ", dateRegex);
         String fin = getMsg("Date butoir : ", dateRegex);
@@ -118,6 +119,7 @@ public class ProjVue {
     }
 
     public Client.ClientBuilder encodeClient() {
+        affMsg("Encodage Client");
         String nom = getMsg("Nom : ", texteRegex);
         String ville = getMsg("Ville : ", texteRegex);
         String tel = getMsg("Tel : ", telRegex);
@@ -131,6 +133,7 @@ public class ProjVue {
     }
 
     public Employe.EmployeBuilder encodeEmploye() {
+        affMsg("Encodage Employé");
         String nom = getMsg("Nom : ", texteRegex);
         String prenom = getMsg("Prénom : ",texteRegex);
         String gsm = getMsg("Numéro de gsm : ", telRegex);
@@ -145,7 +148,7 @@ public class ProjVue {
     }
 
     public Discipline encodeDiscipline() {
-        String nom = getMsg("Nom de la discipline : ", texteRegex);
+        String nom = getMsg("Discipline : ", texteRegex);
         nom = nom.toLowerCase();
         return new Discipline(nom);
     }
