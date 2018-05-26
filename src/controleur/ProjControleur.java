@@ -194,6 +194,7 @@ public class ProjControleur {
                             break;
                         case 6:
                             vue.affMsg("Supprimer un employé sur un projet");
+                            suppEmpProj();
                             break;
                         case 7:
                             vue.affMsg("Supprimer une compétence à un employé");
@@ -590,6 +591,21 @@ public class ProjControleur {
         } else {
             String msg = modele.suppEmploye(emp);
             vue.affMsg(msg);
+        }
+    }
+    
+    public void suppEmpProj(){
+        Projet p = (Projet) rechProjet();
+        if(p == null){
+            vue.affMsg("Projet introuvable");
+        } else{
+            Employe emp = (Employe) rechEmploye();
+            if(emp == null){
+                vue.affMsg("Employé introuvable");
+            } else{
+                String msg = modele.suppEmpProj(p,emp);
+                vue.affMsg(msg);
+            }
         }
     }
 

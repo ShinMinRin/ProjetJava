@@ -802,8 +802,8 @@ public class ProjModeleJDBC extends ProjModele {
 
         return lp;
     }
-    
-    public List<Discipline> listeDiscProj(Projet p){
+
+    public List<Discipline> listeDiscProj(Projet p) {
         String query = "SELECT * FROM PROJ_DISCIPLINE WHERE ID_DISC IN ("
                 + "SELECT ID_DISC FROM PROJ_TEMPS WHERE ID_PROJ =("
                 + "SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?))";
@@ -1168,7 +1168,6 @@ public class ProjModeleJDBC extends ProjModele {
             pstm.setString(2, emp.getNom());
             pstm.setString(3, emp.getPrenom());
             pstm.setString(4, d.getNom());
-            
 
             int n = pstm.executeUpdate();
             if (n == 1) {
@@ -1392,6 +1391,41 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    public String suppEmpProj(Projet p, Employe emp) {
+        String msg;
+        String query = "DELETE FROM PROJ_TRAVAIL WHERE ID_PROJ ="
+                + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?) "
+                + "AND ID_EMP = (SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?)";
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, p.getTitre());
+            pstm.setString(2, emp.getNom());
+            pstm.setString(3, emp.getPrenom());
+
+            int n = pstm.executeUpdate();
+            if (n == 1) {
+                msg = "Suppression de l'employé du projet effectuée";
+            } else {
+                msg = "Suppression de l'employé du projet non effectuée";
+            }
+
+        } catch (SQLException e) {
+            msg = "Erreur lors de la suppression de l'employé du projet " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+
+        return msg;
+    }
+
     public String suppDiscipline(Discipline d) {
         String msg;
         String query = "DELETE FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?";
@@ -1422,14 +1456,13 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
-    
-    public String suppDiscProj(Projet p, Discipline d){
+    public String suppDiscProj(Projet p, Discipline d) {
         String msg;
         String query = "DELETE FROM PROJ_TEMPS WHERE ID_PROJ ="
                 + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?)"
                 + "AND ID_DISC ="
                 + "(SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?)";
-        
+
         PreparedStatement pstm = null;
 
         try {
@@ -1454,10 +1487,10 @@ public class ProjModeleJDBC extends ProjModele {
                 msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
-    
+
     @Override
     public Client dernierClient() {
         String query = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = (SELECT MAX(ID_CLI) FROM PROJ_CLIENT)";
