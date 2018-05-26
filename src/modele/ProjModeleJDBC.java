@@ -324,6 +324,7 @@ public class ProjModeleJDBC extends ProjModele {
         String query;
         PreparedStatement pstm = null;
         Object o1 = new Object();
+        o1 = null;
         ResultSet rs = null;
 
         //On vérifie que l'objet n'est pas null
@@ -412,6 +413,7 @@ public class ProjModeleJDBC extends ProjModele {
                     }
 
                 }
+                
 
             } catch (SQLException e) {
                 System.err.println("Erreur lors de la recherche employé " + e);

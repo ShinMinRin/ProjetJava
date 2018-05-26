@@ -127,22 +127,38 @@ public class ProjControleur {
                         case 1: //client
                             vue.affMsg("Rechercher un client");
                             Client cli = (Client) rechClient();
-                            vue.affMsg(cli.toString());
+                            if (cli == null) {
+                                vue.affMsg("Client introuvable");
+                            } else {
+                                vue.affMsg(cli.toString());
+                            }
                             break;
                         case 2: //projet
                             vue.affMsg("Rechercher un projet");
                             Projet p = (Projet) rechProjet();
-                            vue.affMsg(p.toString());
+                            if (p == null) {
+                                vue.affMsg("Projet introuvable");
+                            } else {
+                                vue.affMsg(p.toString());
+                            }
                             break;
                         case 3: //Employé
                             vue.affMsg("Rechercher un employé");
                             Employe emp = (Employe) rechEmploye();
-                            vue.affMsg(emp.toString());
+                            if (emp == null) {
+                                vue.affMsg("Employé introuvable");
+                            } else {
+                                vue.affMsg(emp.toString());
+                            }
                             break;
                         case 4: //Discipline
                             vue.affMsg("Rechercher une discipline");
                             Discipline d = (Discipline) rechDiscipline();
-                            vue.affMsg(d.toString());
+                            if (d == null) {
+                                vue.affMsg("Discipline introuvable");
+                            } else {
+                                vue.affMsg(d.toString());
+                            }
                             break;
                     }
                     break;
@@ -225,14 +241,14 @@ public class ProjControleur {
             vue.affMsg("Erreur de création " + exc);
         }
     }
-    
-    public void ajouterCompetence(){
+
+    public void ajouterCompetence() {
         Employe emp = (Employe) rechEmploye();
         Discipline d = (Discipline) rechDiscipline();
         List<Niveau> ln = modele.tousNiveaux();
         vue.affListe(ln);
         int ch = Integer.parseInt(vue.getMsg("Quel niveau ? ", "[1-3]{1}"));
-        Niveau niv = ln.get(ch-1);
+        Niveau niv = ln.get(ch - 1);
         Competence c = new Competence(emp, d, niv);
         String msg = modele.ajouterObjet(c);
         vue.affMsg(msg);
@@ -240,21 +256,7 @@ public class ProjControleur {
 
     public void ajouterTravail() {
         Projet p = (Projet) rechProjet();
-        Object o = rechEmploye();
-        Employe emp = null;
-        if (o==null){
-            String rep = vue.getMsg("Employé introuvable. Voulez-vous l'ajouter ? (o/n)", "[oOnN]");
-            if(rep.equalsIgnoreCase("o")){
-                ajouterEmploye();
-                emp = modele.dernierEmploye();
-            }
-            else{
-                return;
-            }
-        }
-        else{
-            emp = (Employe) o;
-        }
+        Employe emp = (Employe) rechEmploye();
         String date = vue.getMsg("Date d'engagement sur le projet : ", vue.dateRegex);
         float pc = Float.parseFloat(vue.getMsg("Pourcentage : ", "^100(\\.0{0,2}?)?$|^\\d{0,2}(\\.\\d{0,2})?$"));
         Travail tv = new Travail(p, emp, date, pc);
@@ -347,8 +349,8 @@ public class ProjControleur {
         vue.affListe(l);
         vue.affMsg("\n");
     }
-    
-    public void listeCompEmp(){
+
+    public void listeCompEmp() {
         Employe emp = (Employe) rechEmploye();
         List<Competence> l = modele.listeCompEmp(emp);
         vue.affListe(l);
@@ -357,34 +359,55 @@ public class ProjControleur {
 
     public void modifVilleCli() {
         Client cli = (Client) rechClient();
-        String newVille = vue.getMsg("Nouvelle ville : ");
-        newVille = newVille.toLowerCase();
-        vue.affMsg(modele.changeVilleClient(cli, newVille) + "\n");
+        if (cli == null) {
+            vue.affMsg("Client introuvable");
+        } else {
+            String newVille = vue.getMsg("Nouvelle ville : ");
+            newVille = newVille.toLowerCase();
+            vue.affMsg(modele.changeVilleClient(cli, newVille) + "\n");
+        }
+
     }
 
     public void modifTelCli() {
         Client cli = (Client) rechClient();
-        String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
-        vue.affMsg(modele.changeTelClient(cli, newTel) + "\n");
+        if (cli == null) {
+            vue.affMsg("Client introuvable");
+        } else {
+            String newTel = vue.getMsg("Nouveau numéro de téléphone : ");
+            vue.affMsg(modele.changeTelClient(cli, newTel) + "\n");
+        }
     }
 
     public void modifGsmEmp() {
         Employe emp = (Employe) rechEmploye();
-        String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
-        vue.affMsg(modele.changeGsmEmploye(emp, newGsm) + "\n");
+        if (emp == null) {
+            vue.affMsg("Employé introuvable");
+        } else {
+            String newGsm = vue.getMsg("Nouveau numéro de téléphone : ");
+            vue.affMsg(modele.changeGsmEmploye(emp, newGsm) + "\n");
+        }
     }
 
     public void modifEmailEmp() {
         Employe emp = (Employe) rechEmploye();
-        String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
-        newMail = newMail.toLowerCase();
-        vue.affMsg(modele.changeEmailEmploye(emp, newMail + "\n"));
+        if (emp == null) {
+            vue.affMsg("Employé introuvable");
+        } else {
+            String newMail = vue.getMsg("Nouvelle adresse e-mail : ");
+            newMail = newMail.toLowerCase();
+            vue.affMsg(modele.changeEmailEmploye(emp, newMail + "\n"));
+        }
     }
 
     public void modifDateButoirProj() {
         Projet p = (Projet) rechProjet();
-        String newDate = vue.getMsg("Nouvelle date butoir : ");
-        vue.affMsg(modele.changeDateButoirProj(p, newDate) + "\n");
+        if (p == null) {
+            vue.affMsg("Projet introuvable");
+        } else {
+            String newDate = vue.getMsg("Nouvelle date butoir : ");
+            vue.affMsg(modele.changeDateButoirProj(p, newDate) + "\n");
+        }
     }
 
     public Object rechClient() {
@@ -437,12 +460,7 @@ public class ProjControleur {
         }
 
         Object o = modele.getObject(emp);
-        if(o instanceof Employe){
-            return o;
-        }
-        else {
-            return null;
-        }
+        return o;
     }
 
     public Object rechDiscipline() {
@@ -455,25 +473,41 @@ public class ProjControleur {
 
     public void suppClient() {
         Client cli = (Client) rechClient();
-        String msg = modele.suppClient(cli);
-        vue.affMsg(msg);
+        if (cli == null) {
+            vue.affMsg("Client introuvable");
+        } else {
+            String msg = modele.suppClient(cli);
+            vue.affMsg(msg);
+        }
     }
 
     public void suppProjet() {
         Projet p = (Projet) rechProjet();
-        String msg = modele.suppProjet(p);
-        vue.affMsg(msg);
+        if (p == null) {
+            vue.affMsg("Projet introuvable");
+        } else {
+            String msg = modele.suppProjet(p);
+            vue.affMsg(msg);
+        }
     }
 
     public void suppEmploye() {
         Employe emp = (Employe) rechEmploye();
-        String msg = modele.suppEmploye(emp);
-        vue.affMsg(msg);
+        if (emp == null) {
+            vue.affMsg("Employé introuvable");
+        } else {
+            String msg = modele.suppEmploye(emp);
+            vue.affMsg(msg);
+        }
     }
 
     public void suppDiscipline() {
         Discipline d = (Discipline) rechDiscipline();
-        String msg = modele.suppDiscipline(d);
-        vue.affMsg(msg);
+        if (d == null) {
+            vue.affMsg("Discipline introuvable");
+        } else {
+            String msg = modele.suppDiscipline(d);
+            vue.affMsg(msg);
+        }
     }
 }

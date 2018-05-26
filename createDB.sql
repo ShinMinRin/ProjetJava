@@ -87,8 +87,8 @@ CREATE TABLE Proj_Travail (
     id_travail INTEGER NOT NULL,
     id_proj INTEGER NOT NULL,
     id_emp INTEGER NOT NULL,
-    date_engagement INTEGER NOT NULL,
-    pourcentage INTEGER NOT NULL,
+    date_engagement DATE NOT NULL,
+    pourcentage FLOAT NOT NULL,
     CONSTRAINT PK_travail PRIMARY KEY (id_travail),
     CONSTRAINT UC_travail UNIQUE (id_proj, id_emp)
 );
