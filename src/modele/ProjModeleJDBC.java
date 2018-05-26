@@ -1391,6 +1391,42 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    public String suppCompEmp(Employe emp, Competence c){
+        String msg;
+        String query = "DELETE FROM PROJ_COMPETENCE WHERE ID_EMP = "
+                + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?) "
+                + "AND ID_DISC = (SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?)";
+        
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, emp.getNom());
+            pstm.setString(2, emp.getPrenom());
+            pstm.setString(3, c.getDiscipline().getNom());
+
+            int n = pstm.executeUpdate();
+            if (n == 1) {
+                msg = "Suppression de la compétence de l'employé effectuée";
+            } else {
+                msg = "Suppression de la compétence de l'employé non effectuée";
+            }
+
+        } catch (SQLException e) {
+            msg = "Erreur lors de la suppression de la compétence de l'employé " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+        
+        return msg;
+    }
+    
     public String suppEmpProj(Projet p, Employe emp) {
         String msg;
         String query = "DELETE FROM PROJ_TRAVAIL WHERE ID_PROJ ="

@@ -55,6 +55,8 @@ public class ProjControleur {
                             vue.affMsg("Ajouter une compétence à un employé");
                             ajouterCompetence();
                             break;
+                        case 8 :
+                            break;
                     }
                     break;
 
@@ -93,6 +95,8 @@ public class ProjControleur {
                             vue.affMsg("Liste des compétences d'un employé");
                             listeCompEmp();
                             break;
+                        case 9 :
+                            break;
 
                     }
                     break;
@@ -123,6 +127,8 @@ public class ProjControleur {
                         case 6: //compétence emp
                             vue.affMsg("Modifier le niveau de compétence d'un employé");
                             modifCompEmp();
+                            break;
+                        case 7 :
                             break;
                     }
                     break;
@@ -166,6 +172,8 @@ public class ProjControleur {
                                 vue.affMsg(d.toString());
                             }
                             break;
+                        case 5 :
+                            break;
                     }
                     break;
 
@@ -198,6 +206,9 @@ public class ProjControleur {
                             break;
                         case 7:
                             vue.affMsg("Supprimer une compétence à un employé");
+                            suppCompEmp();
+                            break;
+                        case 8 :
                             break;
                     }
                     break;
@@ -591,6 +602,36 @@ public class ProjControleur {
         } else {
             String msg = modele.suppEmploye(emp);
             vue.affMsg(msg);
+        }
+    }
+    
+    public void suppCompEmp(){
+        Employe emp = (Employe) rechEmploye();
+        if (emp == null) {
+            vue.affMsg("Employé introuvable");
+        } else {
+            List<Competence> l = modele.listeCompEmp(emp);
+            if (l.isEmpty()) {
+                vue.affMsg("Aucune compétence attribuée à cet employé");
+                return;
+            } else {
+                vue.affListe(l);
+                boolean ok = true;
+                do {
+                    int ch = Integer.parseInt(vue.getMsg("Compétence à supprimer (0 pour quitter) : ", "[0-9]+"));
+                    if (ch == 0) {
+                        return;
+                    } else if (ch > l.size()) {
+                        vue.affMsg("Réponse invalide, veuillez recommencer");
+                        ok = false;
+                    } else {
+                        Competence c = l.get(ch - 1);
+                        String msg = modele.suppCompEmp(emp, c);
+                        vue.affMsg(msg);
+                    }
+                } while (!ok);
+
+            }
         }
     }
     

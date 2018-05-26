@@ -18,15 +18,15 @@ public class ProjVue {
 
     private List<String> menuPrincipal = new ArrayList<>(Arrays.asList("Ajouter", "Listes", "Modifier", "Rechercher", "Supprimer", "Quitter"));
     private List<String> menuAjout = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline",
-            "Discipline à un projet", "Employé sur un projet", "Compétence à un employé"));
+            "Discipline à un projet", "Employé sur un projet", "Compétence à un employé", "Retour"));
     private List<String> menuAffiche = new ArrayList<>(Arrays.asList("Liste des clients", "Liste des projets", "Liste des employés", "Liste des disciplines",
-            "Liste des disciplines d'un projet", "Liste des employés d'un projet", "Liste des projets d'un employé", "Liste des compétences d'un employé"));
+            "Liste des disciplines d'un projet", "Liste des employés d'un projet", "Liste des projets d'un employé", "Liste des compétences d'un employé", "Retour"));
     private List<String> menuModif = new ArrayList<>(Arrays.asList("Client - Modifier la ville", "Client - Modifier le téléphone",
             "Projet - Modifier la date butoir",
-            "Employé - Modifier le gsm", "Employé - Modifier l'email", "Employé - Modifier un niveau de compétence"));
-    private List<String> menuRech = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline"));
+            "Employé - Modifier le gsm", "Employé - Modifier l'email", "Employé - Modifier un niveau de compétence", "Retour"));
+    private List<String> menuRech = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline", "Retour"));
     private List<String> menuSupp = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline",
-            "Discipline à un projet", "Employé sur un projet", "Compétence à un employé"));
+            "Discipline à un projet", "Employé sur un projet", "Compétence à un employé", "Retour"));
 
     public int menuPrincipal() {
         affListe(menuPrincipal);
