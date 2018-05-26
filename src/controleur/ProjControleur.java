@@ -116,7 +116,9 @@ public class ProjControleur {
                             vue.affMsg("Modifier l'email d'un employé");
                             modifEmailEmp();
                             break;
-                        case 6: //TODO compétence emp
+                        case 6: //compétence emp
+                            vue.affMsg("Modifier le niveau de compétence d'un employé");
+                            modifCompEmp();
                             break;
                     }
                     break;
@@ -428,6 +430,40 @@ public class ProjControleur {
         }
     }
 
+    public void modifCompEmp() {
+        Employe emp = (Employe) rechEmploye();
+        if (emp == null) {
+            vue.affMsg("Employé introuvable");
+        } else {
+            List<Competence> l = modele.listeCompEmp(emp);
+            if (l.isEmpty()) {
+                vue.affMsg("Aucune compétence attribuée à cet employé");
+                return;
+            } else {
+                vue.affListe(l);
+                boolean ok = true;
+                do {
+                    int ch = Integer.parseInt(vue.getMsg("Compétence à modifier (0 pour quitter) : ", "[0-9]+"));
+                    if (ch == 0) {
+                        return;
+                    } else if (ch > l.size()) {
+                        vue.affMsg("Réponse invalide, veuillez recommencer");
+                        ok = false;
+                    } else {
+                        Competence c = l.get(ch - 1);
+                        List<Niveau> ln = modele.tousNiveaux();
+                        vue.affListe(ln);
+                        ch = Integer.parseInt(vue.getMsg("Quel niveau ? ", "[1-3]{1}"));
+                        Niveau niv = ln.get(ch - 1);
+                        String msg = modele.changeNivComp(emp, c.getDiscipline(), niv);
+                        vue.affMsg(msg);
+                    }
+                } while (!ok);
+
+            }
+        }
+    }
+
     public void modifDateButoirProj() {
         Projet p = (Projet) rechProjet();
         if (p == null) {
@@ -475,8 +511,8 @@ public class ProjControleur {
     public Object rechEmploye() {
         Employe emp = null;
 
-        String nom = vue.getMsg("Nom : ");
-        String prenom = vue.getMsg("Prénom : ");
+        String nom = vue.getMsg("Nom de l'employé : ");
+        String prenom = vue.getMsg("Prénom de l'employé : ");
         nom = nom.toLowerCase();
         prenom = prenom.toLowerCase();
 
@@ -492,7 +528,7 @@ public class ProjControleur {
     }
 
     public Object rechDiscipline() {
-        String nom = vue.getMsg("Nom : ");
+        String nom = vue.getMsg("Discipline : ");
         nom = nom.toLowerCase();
         Discipline d = new Discipline(nom);
         Object o = modele.getObject(d);

@@ -413,7 +413,6 @@ public class ProjModeleJDBC extends ProjModele {
                     }
 
                 }
-                
 
             } catch (SQLException e) {
                 System.err.println("Erreur lors de la recherche employé " + e);
@@ -1108,6 +1107,45 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    public String changeNivComp(Employe emp, Discipline d, Niveau niv) {
+        String msg;
+        String query = "UPDATE PROJ_COMPETENCE SET ID_NIV ="
+                + "(SELECT ID_NIV FROM PROJ_NIVEAU WHERE DESC_NIV = ?) "
+                + "WHERE ID_EMP = "
+                + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?) "
+                + "AND ID_DISC = "
+                + "(SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?)";
+
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, niv.getSignification());
+            pstm.setString(2, emp.getNom());
+            pstm.setString(3, emp.getPrenom());
+            pstm.setString(4, d.getNom());
+            
+
+            int n = pstm.executeUpdate();
+            if (n == 1) {
+                msg = "Changement de niveau effectué";
+            } else {
+                msg = "Changement de niveau non effectué";
+            }
+        } catch (SQLException e) {
+            msg = "Erreur lors du changement de niveau " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+        return msg;
+    }
+
     public String changeDateButoirProj(Projet p, String dateB) {
         String msg;
         String query = "UPDATE PROJ_PROJET SET DATE_BUTOIR = ? WHERE TITRE_PROJ = ?";
@@ -1442,7 +1480,7 @@ public class ProjModeleJDBC extends ProjModele {
                 String prenom = rs.getString("PRENOM_EMP");
                 String gsm = rs.getString("GSM_EMP");
                 String email = rs.getString("EMAIL_EMP");
-                
+
                 Employe.EmployeBuilder eb = new Employe.EmployeBuilder();
                 try {
                     emp = eb.setEmail(email).setGsm(gsm).setNom(nom).setPrenom(prenom).build();
@@ -1450,7 +1488,7 @@ public class ProjModeleJDBC extends ProjModele {
                     System.err.println("Erreur employé " + e);
                 }
             }
-            
+
         } catch (SQLException e) {
             System.err.println("Erreur lors de la recherche du dernier employé encodé " + e);
         } finally {

@@ -48,7 +48,7 @@ public class Niveau {
      */
     @Override
     public String toString() {
-        return degre + ". " + signification;
+        return signification;
     }
 
     @Override

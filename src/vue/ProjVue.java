@@ -23,7 +23,7 @@ public class ProjVue {
             "Liste des employés d'un projet", "Liste des projets d'un employé", "Liste des compétences d'un employé"));
     private List<String> menuModif = new ArrayList<>(Arrays.asList("Client - Modifier la ville", "Client - Modifier le téléphone",
             "Projet - Modifier la date butoir",
-            "Employé - Modifier le gsm", "Employé - Modifier l'email", "Employé - Modifier une compétence"));
+            "Employé - Modifier le gsm", "Employé - Modifier l'email", "Employé - Modifier un niveau de compétence"));
     private List<String> menuRech = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline"));
     private List<String> menuSupp = new ArrayList<>(Arrays.asList("Client", "Projet", "Employé", "Discipline"));
 
