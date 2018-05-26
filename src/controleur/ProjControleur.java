@@ -9,14 +9,25 @@ public class ProjControleur {
     private ProjModeleJDBC modele = null;
     private ProjVue vue = null;
 
+    /**
+     * Constructeur par défaut
+     */
     public ProjControleur() {
     }
 
+    /**
+     * Constructeur complet
+     * @param modele version JDBC
+     * @param vue 
+     */
     public ProjControleur(ProjModeleJDBC modele, ProjVue vue) {
         this.modele = modele;
         this.vue = vue;
     }
 
+    /**
+     * Gestion des différents menus du programme
+     */
     public void gestion() {
         int ch1 = 0, ch2;
 
@@ -222,6 +233,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant d'ajouter un projet dans la bdd
+     */
     public void ajouterProjet() {
         Client c = null;
         String rep;
@@ -259,6 +273,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode permettant d'ajouter un employé dans la bdd
+     */
     public void ajouterEmploye() {
         Employe.EmployeBuilder eb = vue.encodeEmploye();
         try {
@@ -270,6 +287,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode permettant d'ajouter une compétence à un employé dans la bdd
+     */
     public void ajouterCompetence() {
         Employe emp = (Employe) rechEmploye();
         Discipline d = (Discipline) rechDiscipline();
@@ -282,6 +302,9 @@ public class ProjControleur {
         vue.affMsg(msg);
     }
 
+    /**
+     * Méthode permettant d'ajouter un employé sur un projet dans la bdd
+     */
     public void ajouterTravail() {
         Projet p = (Projet) rechProjet();
         Employe emp = (Employe) rechEmploye();
@@ -292,12 +315,18 @@ public class ProjControleur {
         vue.affMsg(msg);
     }
 
+    /**
+     * Méthode permettant d'ajouter une discipline dans la bdd
+     */
     public void ajouterDiscipline() {
         Discipline d = vue.encodeDiscipline();
         String msg = modele.ajouterObjet(d);
         vue.affMsg(msg);
     }
 
+    /**
+     * Méthode permettant d'ajouter une discipline à un projet dans la bdd
+     */
     public void ajouterDiscToProj() {
         Projet p = (Projet) rechProjet();
         Boolean encore = true;
@@ -312,8 +341,8 @@ public class ProjControleur {
                 ajouterDiscipline();
                 d = modele.derniereDiscipline();
             }
-            int jh = Integer.parseInt(vue.getMsg("Nombre de journée/homme prévue pour cette discipline (" + d.getNom() + ") : ", "[0-9]+"));
-            ajouterTemps(p, d, jh);
+            
+            ajouterTemps(p, d);
 
             String rep = vue.getMsg("Voulez-vous ajouter une autre discipline pour ce projet ? (o/n)", "[oOnN]");
             if (rep.equalsIgnoreCase("n")) {
@@ -322,6 +351,9 @@ public class ProjControleur {
         } while (encore);
     }
 
+    /**
+     * Méthode permettant d'ajouter un client dans la bdd
+     */
     public void ajouterClient() {
         Client.ClientBuilder cb = vue.encodeClient();
         try {
@@ -334,12 +366,21 @@ public class ProjControleur {
 
     }
 
-    public void ajouterTemps(Projet p, Discipline d, int nb_jh) {
-        Temps t = new Temps(d, p, nb_jh);
+    /**
+     * Méthode permettant d'ajouter le temps prévu pour une discipline sur un projet 
+     * @param p projet concerné
+     * @param d discipline concernée
+     */
+    public void ajouterTemps(Projet p, Discipline d) {
+        int jh = Integer.parseInt(vue.getMsg("Nombre de journée/homme prévue pour cette discipline (" + d.getNom() + ") : ", "[0-9]+"));
+        Temps t = new Temps(d, p, jh);
         String msg = modele.ajouterObjet(t);
         vue.affMsg(msg);
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des clients encodés dans la bdd
+     */
     public void listeClients() {
         List<Client> l = modele.tousClients();
         if (l.isEmpty()) {
@@ -350,6 +391,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des projets encodés dans la bdd
+     */
     public void listeProjets() {
         List<Projet> l = modele.tousProjets();
         if (l.isEmpty()) {
@@ -360,6 +404,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des employés encodés dans la bdd
+     */
     public void listeEmployes() {
         List<Employe> l = modele.tousEmployes();
         if (l.isEmpty()) {
@@ -370,6 +417,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des disciplines encodées dans la bdd
+     */
     public void listeDisciplines() {
         List<Discipline> l = modele.toutesDisciplines();
         if (l.isEmpty()) {
@@ -380,6 +430,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des disciplines associées à un projet
+     */
     public void listeDiscProj() {
         Projet p = (Projet) rechProjet();
         if (p == null) {
@@ -394,6 +447,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des employés travaillant sur un projet
+     */
     public void listeEmpProj() {
         Projet p = (Projet) rechProjet();
         List<Employe> l = modele.listeEmployeDuProjet(p);
@@ -405,6 +461,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des projets sur lesquels travaille un employé
+     */
     public void listeProjEmp() {
         Employe emp = (Employe) rechEmploye();
         List<Projet> l = modele.listeProjetParEmploye(emp);
@@ -416,6 +475,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant d'afficher la liste des compétences d'un employé
+     */
     public void listeCompEmp() {
         Employe emp = (Employe) rechEmploye();
         List<Competence> l = modele.listeCompEmp(emp);
@@ -427,6 +489,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant de modifier la ville d'un client
+     */
     public void modifVilleCli() {
         Client cli = (Client) rechClient();
         if (cli == null) {
@@ -439,6 +504,9 @@ public class ProjControleur {
 
     }
 
+    /**
+     * Méthode permettant de modifier le téléphone d'un client
+     */
     public void modifTelCli() {
         Client cli = (Client) rechClient();
         if (cli == null) {
@@ -449,6 +517,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode permettant de modifier le gsm d'un employé
+     */
     public void modifGsmEmp() {
         Employe emp = (Employe) rechEmploye();
         if (emp == null) {
@@ -459,6 +530,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode permettant de modifier l'email d'un employé
+     */
     public void modifEmailEmp() {
         Employe emp = (Employe) rechEmploye();
         if (emp == null) {
@@ -470,6 +544,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode permettant de modifier la compétence d'un employé
+     */
     public void modifCompEmp() {
         Employe emp = (Employe) rechEmploye();
         if (emp == null) {
@@ -504,6 +581,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode permettant de modifier la date butoir d'un projet
+     */
     public void modifDateButoirProj() {
         Projet p = (Projet) rechProjet();
         if (p == null) {
@@ -514,6 +594,10 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode de recherche d'un client
+     * @return Object client trouvé ou null si non trouvé
+     */
     public Object rechClient() {
         Client cli = null;
         String nom = vue.getMsg("Nom du client : ");
@@ -532,6 +616,10 @@ public class ProjControleur {
         return o;
     }
 
+    /**
+     * Méthode de recherche d'un projet
+     * @return Object projet trouvé ou null si non trouvé
+     */
     public Object rechProjet() {
         Projet p = null;
         String titre = vue.getMsg("Titre du projet : ");
@@ -548,6 +636,10 @@ public class ProjControleur {
         return o;
     }
 
+    /**
+     * Méthode de recherche d'un employé
+     * @return Object employé trouvé ou null si non trouvé
+     */
     public Object rechEmploye() {
         Employe emp = null;
 
@@ -567,6 +659,10 @@ public class ProjControleur {
         return o;
     }
 
+    /**
+     * Méthode de recherche d'une discipline
+     * @return Object discipline trouvée ou null si non trouvé
+     */
     public Object rechDiscipline() {
         String nom = vue.getMsg("Discipline : ");
         nom = nom.toLowerCase();
@@ -575,6 +671,9 @@ public class ProjControleur {
         return o;
     }
 
+    /**
+     * Méthode de suppression d'un client
+     */
     public void suppClient() {
         Client cli = (Client) rechClient();
         if (cli == null) {
@@ -585,6 +684,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode de suppression d'un projet
+     */
     public void suppProjet() {
         Projet p = (Projet) rechProjet();
         if (p == null) {
@@ -595,6 +697,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode de suppression d'un employé
+     */
     public void suppEmploye() {
         Employe emp = (Employe) rechEmploye();
         if (emp == null) {
@@ -605,6 +710,9 @@ public class ProjControleur {
         }
     }
     
+    /**
+     * Méthode de suppression d'une compétence d'un employé
+     */
     public void suppCompEmp(){
         Employe emp = (Employe) rechEmploye();
         if (emp == null) {
@@ -635,6 +743,9 @@ public class ProjControleur {
         }
     }
     
+    /**
+     * Méthode de suppression d'un employé d'un projet
+     */
     public void suppEmpProj(){
         Projet p = (Projet) rechProjet();
         if(p == null){
@@ -650,6 +761,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode de suppression d'une discipline
+     */
     public void suppDiscipline() {
         Discipline d = (Discipline) rechDiscipline();
         if (d == null) {
@@ -660,6 +774,9 @@ public class ProjControleur {
         }
     }
 
+    /**
+     * Méthode de suppression d'une discipline d'un projet
+     */
     public void suppDiscProj() {
         Projet p = (Projet) rechProjet();
         if (p == null) {
