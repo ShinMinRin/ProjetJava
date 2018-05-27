@@ -1338,7 +1338,7 @@ public class ProjModeleJDBC extends ProjModele {
     @Override
     public String suppClient(Client c) {
         String msg;
-        String query = "DELETE FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ? AND TEL = ?";
+        String query = "DELETE FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ? AND TEL_CLI = ?";
         PreparedStatement pstm = null;
 
         try {
@@ -1379,7 +1379,7 @@ public class ProjModeleJDBC extends ProjModele {
         String msg;
 
         //On supprime d'abord les travaux liés au projet
-        String query = "DELETE FROM PROJ_TRAVAIL WHERE ID_PROJ = (SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?";
+        String query = "DELETE FROM PROJ_TRAVAIL WHERE ID_PROJ = (SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?)";
         PreparedStatement pstm = null;
 
         try {
@@ -1406,9 +1406,37 @@ public class ProjModeleJDBC extends ProjModele {
             }
         }
 
+        //On supprime les lignes de la table PROJ_TEMPS concernées
+        query = "DELETE FROM PROJ_TEMPS WHERE ID_PROJ = "
+                + "(SELECT ID_PROJ FROM PROJ_PROJET WHERE TITRE_PROJ = ?)";
+        
+        try {
+            pstm = dbconnect.prepareStatement(query);
+            pstm.setString(1, p.getTitre());
+
+            int n = pstm.executeUpdate();
+
+            if (n > 0) {
+                msg += "\nSuppression des temps liés au projet effectuée";
+            } else {
+                msg += "\nAucun temps associé au projet";
+            }
+
+        } catch (SQLException e) {
+            msg = "Erreur lors de la suppression des temps liés au projet " + e;
+        } finally {
+            try {
+                if (pstm != null) {
+                    pstm.close();
+                }
+            } catch (SQLException e) {
+                msg = "Erreur de fermeture de preparedStatement " + e;
+            }
+        }
+        
         //On supprime ensuite le projet
-        query = "DELETE FROM PROJ_PROJET WHERE TITRE_PROJ = ? AND CLIENT = "
-                + "(SELECT ID_CLI FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ?";
+        query = "DELETE FROM PROJ_PROJET WHERE TITRE_PROJ = ? AND CLIENT_PROJ = "
+                + "(SELECT ID_CLI FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ?)";
 
         try {
             pstm = dbconnect.prepareStatement(query);
