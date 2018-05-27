@@ -40,15 +40,20 @@ public class ProjModeleJDBC extends ProjModele {
     }
 
     /**
-     * Réecriture de la méthode du modèle en liste
-     * Méthode permettant de peupler les données, inutile en JDBC
+     * Réecriture de la méthode du modèle en liste Méthode permettant de peupler
+     * les données, inutile en JDBC
      */
     @Override
     public void populate() {
         //ne rien faire car données déjà présentes dans DB
     }
 
-
+    /**
+     * Méthode ajoutant une ligne dans la table concernée par l'objet ajouté
+     *
+     * @param o objet à ajouter à la bdd
+     * @return msg diagnostic de l'ajout
+     */
     @Override
     public String ajouterObjet(Object o) {
         String msg = "";
@@ -292,6 +297,12 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode récupérant une ligne dans la bdd
+     *
+     * @param o objet avec des informations partielles à retrouver dans la bdd
+     * @return o1 objet avec les informations complètes
+     */
     @Override
     public Object getObject(Object o) {
         String query;
@@ -307,8 +318,8 @@ public class ProjModeleJDBC extends ProjModele {
 
         //On détermine la table correspondante au type d'objet
         if (o instanceof Projet) {
-            query = "SELECT * FROM PROJ_PROJET P\n"
-                    + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI\n"
+            query = "SELECT * FROM PROJ_PROJET P "
+                    + "INNER JOIN PROJ_CLIENT CL ON P.CLIENT_PROJ = CL.ID_CLI "
                     + "WHERE P.TITRE_PROJ = ?";
             try {
                 pstm = dbconnect.prepareStatement(query);
@@ -466,6 +477,10 @@ public class ProjModeleJDBC extends ProjModele {
         return o1;
     }
 
+    /**
+     * Méthode retournant toutes les lignes de la table PROJ_DISCIPLINE
+     * @return ArrayList avec les informations sur les différentes disciplines encodées
+     */
     public List<Discipline> toutesDisciplines() {
         String critere = "ORDER BY NOM_DISC";
 
@@ -509,6 +524,10 @@ public class ProjModeleJDBC extends ProjModele {
         return ld;
     }
 
+    /**
+     * Méthode retournant toutes les lignes de la table PROJ_CLIENT
+     * @return ArrayList avec les informations des clients encodés
+     */
     @Override
     public List<Client> tousClients() {
         String critere = "ORDER BY NOM_CLI";
@@ -561,6 +580,10 @@ public class ProjModeleJDBC extends ProjModele {
         return lc;
     }
 
+    /**
+     * Méthode retournant toutes les lignes de la table PROJ_EMPLOYE
+     * @return ArrayList avec les informations des employés encodés
+     */
     @Override
     public List<Employe> tousEmployes() {
         String critere = "ORDER BY NOM_EMP,PRENOM_EMP,GSM_EMP";
@@ -614,6 +637,10 @@ public class ProjModeleJDBC extends ProjModele {
         return le;
     }
 
+    /**
+     * Méthode retournant toutes les lignes de la table PROJ_PROJET
+     * @return ArrayList avec les informations des projets encodés
+     */
     @Override
     public List<Projet> tousProjets() {
         String critere = "ORDER BY CLIENT_PROJ, TITRE_PROJ";
@@ -680,6 +707,10 @@ public class ProjModeleJDBC extends ProjModele {
         return lp;
     }
 
+    /**
+     * Méthode retournant les différents niveaux de compétences possibles
+     * @return ArrayList avec les informations des niveaux encodés
+     */
     public List<Niveau> tousNiveaux() {
         List<Niveau> ln = new ArrayList<>();
         String query = "SELECT * FROM PROJ_NIVEAU ORDER BY ID_NIV";
@@ -719,6 +750,11 @@ public class ProjModeleJDBC extends ProjModele {
         return ln;
     }
 
+    /**
+     * Méthode retournant tous les projets d'un client donné
+     * @param c Client concerné
+     * @return ArrayList avec les informations sur les projets du client c
+     */
     @Override
     public List<Projet> listeProjetsClient(Client c) {
         String critere = "ORDER BY TITRE";
@@ -776,6 +812,11 @@ public class ProjModeleJDBC extends ProjModele {
         return lp;
     }
 
+    /**
+     * Méthode retournant toutes les disciplines présentes sur un projet donné
+     * @param p Projet concerné
+     * @return ArrayList avec les informations sur les disciplines du projet p
+     */
     public List<Discipline> listeDiscProj(Projet p) {
         String query = "SELECT * FROM PROJ_DISCIPLINE WHERE ID_DISC IN ("
                 + "SELECT ID_DISC FROM PROJ_TEMPS WHERE ID_PROJ =("
@@ -820,6 +861,11 @@ public class ProjModeleJDBC extends ProjModele {
         return ld;
     }
 
+    /**
+     * Méthode retournant tous les employés travaillant sur un projet donné
+     * @param p Projet concerné
+     * @return ArrayList avec les informations sur les employés du projet p
+     */
     public List<Employe> listeEmployeDuProjet(Projet p) {
         String query = "SELECT * FROM PROJ_EMPLOYE WHERE ID_EMP IN("
                 + "SELECT ID_EMP FROM PROJ_TRAVAIL WHERE ID_PROJ ="
@@ -875,6 +921,11 @@ public class ProjModeleJDBC extends ProjModele {
         return le;
     }
 
+    /**
+     * Méthode retournant tous les projets sur lesquels un employé travaille
+     * @param emp Employé concerné
+     * @return ArrayList avec les informations des projets de l'employé emp
+     */
     public List<Projet> listeProjetParEmploye(Employe emp) {
         String query = "SELECT * FROM PROJ_PROJET P "
                 + "INNER JOIN PROJ_CLIENT CL ON CL.ID_CLI = P.CLIENT_PROJ "
@@ -944,6 +995,11 @@ public class ProjModeleJDBC extends ProjModele {
         return lp;
     }
 
+    /**
+     * Méthode retournant toutes les compétences attribuées à un employé
+     * @param emp Employé concerné
+     * @return ArrayList avec les compétences de l'employé emp
+     */
     public List<Competence> listeCompEmp(Employe emp) {
         List<Competence> lc = new ArrayList<>();
 
@@ -992,6 +1048,12 @@ public class ProjModeleJDBC extends ProjModele {
         return lc;
     }
 
+    /**
+     * Méthode modifiant la ville d'un client
+     * @param c Client concerné
+     * @param v Nouvelle ville
+     * @return msg Diagnostic de la modification
+     */
     @Override
     public String changeVilleClient(Client c, String v) {
         String query = "UPDATE PROJ_CLIENT SET VILLE_CLI = ? WHERE NOM_CLI = ?";
@@ -1024,6 +1086,12 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode modifiant le numéro de téléphone d'un client
+     * @param c Client concerné
+     * @param t Nouveau numéro de téléphone
+     * @return msg Diagnostic de la modification
+     */
     @Override
     public String changeTelClient(Client c, String t) {
         String query = "UPDATE PROJ_CLIENT SET TEL_CLI = ? WHERE NOM_CLI = ?";
@@ -1056,6 +1124,12 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode modifiant le numéro de gsm d'un employé
+     * @param emp Employé concerné
+     * @param gsm Nouveau numéro de gsm
+     * @return msg Diagnostic de la modification
+     */
     @Override
     public String changeGsmEmploye(Employe emp, String gsm) {
         String query = "UPDATE PROJ_EMPLOYE SET GSM_EMP = ? WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND EMAIL_EMP = ?";
@@ -1090,6 +1164,12 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode modifiant l'adresse email d'un employé
+     * @param emp Employé concerné
+     * @param email Nouvelle adresse email
+     * @return msg Diagnostic de la modification
+     */
     @Override
     public String changeEmailEmploye(Employe emp, String email) {
         String query = "UPDATE PROJ_EMPLOYE SET EMAIL_EMP = ? WHERE NOM_EMP = ? AND PRENOM_EMP = ? AND GSM_EMP = ?";
@@ -1124,6 +1204,13 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode modifiant le niveau d'une compétence d'un employé
+     * @param emp Employé concerné
+     * @param d Discipline concernée
+     * @param niv Nouveau niveau de compétence dans la discipline pour cet employé
+     * @return msg Diagnostic de la modification
+     */
     public String changeNivComp(Employe emp, Discipline d, Niveau niv) {
         String msg;
         String query = "UPDATE PROJ_COMPETENCE SET ID_NIV ="
@@ -1162,6 +1249,12 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode modifiant la date butoir d'un projet
+     * @param p Projet concerné
+     * @param dateB Nouvelle date butoir
+     * @return msg Diagnotic de la modification
+     */
     public String changeDateButoirProj(Projet p, String dateB) {
         String msg;
         String query = "UPDATE PROJ_PROJET SET DATE_BUTOIR = ? WHERE TITRE_PROJ = ?";
@@ -1194,6 +1287,12 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode modifiant le pourcentage de temps consacré par un employé sur un projet
+     * @param t Travail concerné (lien entre le projet et l'employé)
+     * @param p Nouveau pourcentage
+     * @return msg Diagnostic de la modification
+     */
     @Override
     public String changePourcentage(Travail t, float p) {
         String msg;
@@ -1231,6 +1330,11 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode supprimant un client de la bdd
+     * @param c Client à supprimer
+     * @return msg Diagnostic de la suppression
+     */
     @Override
     public String suppClient(Client c) {
         String msg;
@@ -1265,6 +1369,11 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode supprimant un projet et les travaux associés de la bdd
+     * @param p Projet à supprimer
+     * @return msg Diagnostic de la suppression
+     */
     @Override
     public String suppProjet(Projet p) {
         String msg;
@@ -1310,26 +1419,31 @@ public class ProjModeleJDBC extends ProjModele {
             int n = pstm.executeUpdate();
 
             if (n == 1) {
-                msg += "Suppression du projet effectuée";
+                msg += "\nSuppression du projet effectuée";
             } else {
-                msg += "Suppression du projet non effectuée";
+                msg += "\nSuppression du projet non effectuée";
             }
 
         } catch (SQLException e) {
-            msg += "Erreur lors de la suppression du projet " + e;
+            msg += "\nErreur lors de la suppression du projet " + e;
         } finally {
             try {
                 if (pstm != null) {
                     pstm.close();
                 }
             } catch (SQLException e) {
-                msg += "Erreur de fermeture de preparedStatement " + e;
+                msg += "\nErreur de fermeture de preparedStatement " + e;
             }
         }
 
         return msg;
     }
 
+    /**
+     * Méthode supprimant un employé de la bdd
+     * @param emp Employé  supprimer
+     * @return msg Diagnostic de la suppression
+     */
     @Override
     public String suppEmploye(Employe emp) {
         String msg;
@@ -1366,12 +1480,18 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
-    public String suppCompEmp(Employe emp, Competence c){
+    /**
+     * Méthode supprimant une compétence à un employé donné
+     * @param emp Employé concerné
+     * @param c Compétence de l'employé à supprimer
+     * @return msg Diagnostic de la suppression
+     */
+    public String suppCompEmp(Employe emp, Competence c) {
         String msg;
         String query = "DELETE FROM PROJ_COMPETENCE WHERE ID_EMP = "
                 + "(SELECT ID_EMP FROM PROJ_EMPLOYE WHERE NOM_EMP = ? AND PRENOM_EMP = ?) "
                 + "AND ID_DISC = (SELECT ID_DISC FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?)";
-        
+
         PreparedStatement pstm = null;
 
         try {
@@ -1398,10 +1518,16 @@ public class ProjModeleJDBC extends ProjModele {
                 msg = "Erreur de fermeture de preparedStatement " + e;
             }
         }
-        
+
         return msg;
     }
-    
+
+    /**
+     * Méthode supprimant un employé d'un projet donné
+     * @param p Projet concerné
+     * @param emp Employé à supprimer du projet
+     * @return msg Diagnostic de la suppression
+     */
     public String suppEmpProj(Projet p, Employe emp) {
         String msg;
         String query = "DELETE FROM PROJ_TRAVAIL WHERE ID_PROJ ="
@@ -1437,6 +1563,11 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode supprimant une discipline de la bdd
+     * @param d Discipline à supprimer
+     * @return msg Diagnostic de la suppression
+     */
     public String suppDiscipline(Discipline d) {
         String msg;
         String query = "DELETE FROM PROJ_DISCIPLINE WHERE NOM_DISC = ?";
@@ -1467,6 +1598,12 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode supprimant une discipline d'un projet
+     * @param p Projet concerné
+     * @param d Discipline à supprimer du projet
+     * @return msg Diagnostic de la suppression
+     */
     public String suppDiscProj(Projet p, Discipline d) {
         String msg;
         String query = "DELETE FROM PROJ_TEMPS WHERE ID_PROJ ="
@@ -1502,6 +1639,10 @@ public class ProjModeleJDBC extends ProjModele {
         return msg;
     }
 
+    /**
+     * Méthode retournant le dernier client encodé dans la bdd
+     * @return dernier client ajouté
+     */
     @Override
     public Client dernierClient() {
         String query = "SELECT * FROM PROJ_CLIENT WHERE ID_CLI = (SELECT MAX(ID_CLI) FROM PROJ_CLIENT)";
@@ -1550,6 +1691,10 @@ public class ProjModeleJDBC extends ProjModele {
         return cli;
     }
 
+    /**
+     * Méthode retournant la dernière discipline encodée dans la bdd
+     * @return Dernière discipline ajoutée
+     */
     public Discipline derniereDiscipline() {
         String query = "SELECT * FROM PROJ_DISCIPLINE WHERE ID_DISC = (SELECT MAX(ID_DISC) FROM PROJ_DISCIPLINE)";
 
@@ -1588,6 +1733,10 @@ public class ProjModeleJDBC extends ProjModele {
         return d;
     }
 
+    /**
+     * Méthode retournant le dernier employé encodé dans la bdd
+     * @return Dernier employé ajouté
+     */
     public Employe dernierEmploye() {
         String query = "SELECT * FROM PROJ_EMPLOYE WHERE ID_EMP = (SELECT MAX(ID_EMP) FROM PROJ_EMPLOYE)";
 
