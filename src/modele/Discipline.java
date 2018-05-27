@@ -14,25 +14,24 @@ public class Discipline {
 
     /**
      * Constructeur complet
+     * @param nom Nom de la discipline
      */
     public Discipline(String nom) {
         this.nom = nom;
     }
 
     /**
-     * Getters et setters
+     * Getter de la variable Nom
+     * @return nom de la discipline
      */
     public String getNom() {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    /**
-     * Autre
-     */
+   /**
+    * Méthode d'affichage de la discipline
+    * @return String nom de la discipline
+    */
     @Override
     public String toString() {
         return nom;

@@ -17,9 +17,12 @@ public class Temps {
     public Temps() {
     }
 
-    /**
-     * Constructeur complet
-     */
+   /**
+    * Constructeur complet
+    * @param discipline Discipline concernée
+    * @param projet Projet concerné
+    * @param nb_jh Nombre de journée/homme nécessaires dans cette discipline pour ce projet
+    */
     public Temps(Discipline discipline, Projet projet, int nb_jh) {
         this.discipline = discipline;
         this.projet = projet;
@@ -27,27 +30,38 @@ public class Temps {
     }
 
     /**
-     * Getters et setters
+     * Getter de la variable Discipline
+     * @return Discipline concernée
      */
     public Discipline getDiscipline() {
         return discipline;
     }
 
+    /**
+     * Getter de la variable Projet
+     * @return Projet concerné
+     */
     public Projet getProjet() {
         return projet;
     }
 
+    /**
+     * Getter de la variable nb_jh
+     * @return le nombre de journée/homme nécessaire dans la discipline
+     */
     public int getNb_jh() {
         return nb_jh;
     }
 
+    /**
+     * Setter de la variable nb_jh
+     * @param nb_jh Nouveau nombre de journée/homme nécessaire dans la discipline
+     */
     public void setNb_jh(int nb_jh) {
         this.nb_jh = nb_jh;
     }
 
-    /**
-     * Autres
-     */
+    
     @Override
     public int hashCode() {
         int hash = 3;
@@ -74,6 +88,10 @@ public class Temps {
         return true;
     }
 
+    /**
+     * Méthode d'affichage de la classe Temps
+     * @return String Informations du temps nécessaires pour une discipline sur un projet
+     */
     @Override
     public String toString() {
         return nb_jh + " journées/homme prévues pour la discipline : " + discipline + "\n sur le projet : " + projet;

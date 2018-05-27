@@ -16,6 +16,9 @@ public class Competence {
 
     /**
      * Constructeur complet
+     * @param personne Employé qui a la compétence
+     * @param discipline Discipline concernée
+     * @param niveau Niveau possédé pour la discipline
      */
     public Competence(Employe personne, Discipline discipline, Niveau niveau) {
         this.personne = personne;
@@ -24,49 +27,53 @@ public class Competence {
     }
 
     /**
-     * Getters et setters
-     */
-  
+     * Getter permettant de récupérer l'employé concerné
+     * @return Employé concerné
+     */  
     public Employe getPersonne() {
         return personne;
     }
 
-    public void setPersonne(Employe personne) {
-        this.personne = personne;
-    }
-
+    
+    /**
+     * Getter permettant de récupérer la discipline concernée
+     * @return Discipline concernée
+     */
     public Discipline getDiscipline() {
         return discipline;
     }
 
-    public void setDiscipline(Discipline discipline) {
-        this.discipline = discipline;
-    }
-
+   
+    /**
+     * Getter permettant de récupérer le niveau de maîtrise de la discipline
+     * @return Niveau de maîtrise de la discipline
+     */
     public Niveau getNiveau() {
         return niveau;
     }
 
+    /**
+     * Setter permettant de modifier le niveau de maîtrise de la discipline
+     * @param Niveau de maîtrise de la discipline
+     */
     public void setNiveau(Niveau niveau) {
         this.niveau = niveau;
     }
 
     /**
-     * Autres
-     */    
+     * Méthode d'affichage de la compétence
+     * @return String Informations sur la compétence maîtrisée par l'employé
+     */ 
     @Override
     public String toString() {
         return discipline.getNom() + " (" + niveau.getSignification() +")"; 
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.personne);
-        hash = 79 * hash + Objects.hashCode(this.discipline);
-        return hash;
-    }
-
+    /**
+     * Méthode permettant de vérifier l'égalité de deux Compétences
+     * @param obj Competence avec laquelle on compare celle-ci
+     * @return boolean true si les deux compétences sont égales, sinon false
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

@@ -2,9 +2,6 @@ package modele;
 
 import java.util.*;
 
-/**
- *
- */
 public class Niveau {
 
     private int degre;
@@ -17,7 +14,9 @@ public class Niveau {
     }
 
     /**
-     * Constructeur complet
+     * Constructeur de la classe Niveau
+     * @param degre Degré du niveau de maîtrise
+     * @param signification Description du niveau de maîtrise
      */
     public Niveau(int degre, String signification) {
         this.degre = degre;
@@ -25,26 +24,32 @@ public class Niveau {
     }
 
     /**
-     * Getters et setters
+     * Getter de la variable degré
+     * @return degré du niveau de maîtrise
      */
     public int getDegre() {
         return degre;
     }
 
+    /**
+     * Setter de la variable degré
+     * @param degre Nouveau degré de maîtrise
+     */
     public void setDegre(int degre) {
         this.degre = degre;
     }
 
+    /**
+     * Getter de la variable signification
+     * @return String signification
+     */
     public String getSignification() {
         return signification;
     }
 
-    public void setSignification(String signification) {
-        this.signification = signification;
-    }
-
     /**
-     * Autre
+     * Méthode d'affichage d'un objet Niveau
+     * @return String informations sur le niveau de maîtrise
      */
     @Override
     public String toString() {
