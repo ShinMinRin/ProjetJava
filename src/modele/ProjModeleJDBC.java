@@ -17,6 +17,9 @@ public class ProjModeleJDBC extends ProjModele {
 
     Connection dbconnect;
 
+    /**
+     * Constructeur de la classe, permet de se connecter à la bdd
+     */
     public ProjModeleJDBC() {
         dbconnect = DBconnect.getConnection();
         if (dbconnect == null) {
@@ -25,6 +28,9 @@ public class ProjModeleJDBC extends ProjModele {
         }
     }
 
+    /**
+     * Permet de se déconnecter de la bdd
+     */
     public void close() {
         try {
             dbconnect.close();
@@ -33,51 +39,15 @@ public class ProjModeleJDBC extends ProjModele {
         }
     }
 
+    /**
+     * Réecriture de la méthode du modèle en liste
+     * Méthode permettant de peupler les données, inutile en JDBC
+     */
     @Override
     public void populate() {
         //ne rien faire car données déjà présentes dans DB
     }
 
-    public int recupIdCli(Client c) {
-        int idCli = -1;
-
-        String query = "SELECT ID_CLI FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ? AND TEL_CLI = ?";
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
-
-        try {
-            pstm = dbconnect.prepareStatement(query);
-            pstm.setString(1, c.getNom());
-            pstm.setString(2, c.getVille());
-            pstm.setString(3, c.getTel());
-            rs = pstm.executeQuery();
-
-            if (rs.next()) {
-                idCli = rs.getInt("ID_CLI");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Erreur dans la récupération de l'id client " + e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du ResultSet " + e);
-            }
-
-            try {
-                if (pstm != null) {
-                    pstm.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Erreur de fermeture du preparedStatement " + e);
-            }
-        }
-
-        return idCli;
-    }
 
     @Override
     public String ajouterObjet(Object o) {
@@ -91,15 +61,18 @@ public class ProjModeleJDBC extends ProjModele {
 
         //On détermine la table correspondante au type d'objet
         if (o instanceof Projet) {
-            query = "insert into PROJ_PROJET(TITRE_PROJ,CLIENT_PROJ,DATE_DEBUT,DATE_BUTOIR) VALUES (?,?,?,?)";
+            query = "insert into PROJ_PROJET(TITRE_PROJ,CLIENT_PROJ,DATE_DEBUT,DATE_BUTOIR) VALUES (?,"
+                    + "(SELECT ID_CLI FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ?)"
+                    + ",?,?)";
             PreparedStatement pstm = null;
 
             try {
                 pstm = dbconnect.prepareStatement(query);
                 pstm.setString(1, ((Projet) o).getTitre());
-                pstm.setInt(2, recupIdCli(((Projet) o).getClient()));
-                pstm.setString(3, ((Projet) o).getDateDebut().replace("/", "-"));
-                pstm.setString(4, ((Projet) o).getDateButoir().replace("/", "-"));
+                pstm.setString(2, ((Projet) o).getClient().getNom());
+                pstm.setString(3, ((Projet) o).getClient().getVille());
+                pstm.setString(4, ((Projet) o).getDateDebut().replace("/", "-"));
+                pstm.setString(5, ((Projet) o).getDateButoir().replace("/", "-"));
                 int n = pstm.executeUpdate();
 
                 if (n == 1) {
@@ -1325,12 +1298,14 @@ public class ProjModeleJDBC extends ProjModele {
         }
 
         //On supprime ensuite le projet
-        query = "DELETE FROM PROJ_PROJET WHERE TITRE_PROJ = ? AND CLIENT = ?";
+        query = "DELETE FROM PROJ_PROJET WHERE TITRE_PROJ = ? AND CLIENT = "
+                + "(SELECT ID_CLI FROM PROJ_CLIENT WHERE NOM_CLI = ? AND VILLE_CLI = ?";
 
         try {
             pstm = dbconnect.prepareStatement(query);
             pstm.setString(1, p.getTitre());
-            pstm.setInt(2, recupIdCli(p.getClient()));
+            pstm.setString(2, p.getClient().getNom());
+            pstm.setString(3, p.getClient().getVille());
 
             int n = pstm.executeUpdate();
 
