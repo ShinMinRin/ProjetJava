@@ -54,7 +54,7 @@ public class Competence {
 
     /**
      * Setter permettant de modifier le niveau de maîtrise de la discipline
-     * @param Niveau de maîtrise de la discipline
+     * @param niveau de maîtrise de la discipline
      */
     public void setNiveau(Niveau niveau) {
         this.niveau = niveau;

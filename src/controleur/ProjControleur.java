@@ -18,7 +18,7 @@ public class ProjControleur {
     /**
      * Constructeur complet
      * @param modele version JDBC
-     * @param vue 
+     * @param vue classe Vue
      */
     public ProjControleur(ProjModeleJDBC modele, ProjVue vue) {
         this.modele = modele;

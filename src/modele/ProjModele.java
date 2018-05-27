@@ -292,6 +292,7 @@ public class ProjModele {
 
     /**
      * Méthode permettant de récupérer le dernier client ajouté
+     * @return Client dernier client ajouté
      */
     public Client dernierClient(){
         return mesClients.get(mesClients.size()-1);
